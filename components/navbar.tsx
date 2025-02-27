@@ -23,7 +23,7 @@ export default function Navbar() {
       <div className="container mx-auto flex h-16 items-center px-4 sm:px-6">
         <div className="flex items-center gap-2 font-semibold">
           <CarFront className="h-6 w-6" />
-          <span className="hidden sm:inline-block">Auto Retail Inventory</span>
+          <span className="hidden sm:inline-block">Automotive Inventory</span>
         </div>
 
         <nav className="ml-8 flex gap-4">

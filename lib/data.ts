@@ -32,7 +32,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "2",
-    name: "2022 Luxury Sedan",
+    name: "2022 BMW M3 Competition",
     description: "Premium sedan with leather interior and advanced safety features",
     price: 45999.99,
     stock: 8,
@@ -47,7 +47,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "3",
-    name: "2023 Electric Hatchback",
+    name: "2023 Tesla Model Y",
     description: "Fully electric vehicle with 300 mile range and fast charging capability",
     price: 38750.0,
     stock: 15,
