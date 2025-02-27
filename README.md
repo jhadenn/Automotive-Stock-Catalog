@@ -1,6 +1,6 @@
 <h1 align="center" id="title">Automotive Inventory 🚗</h1>
 
-#About 
+# About 
 <p id="description">
   
   
