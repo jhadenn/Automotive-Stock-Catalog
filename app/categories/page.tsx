@@ -151,7 +151,7 @@ function CategorySection({ title, description, products, showAll = false, onView
           <Card key={product.id} className="overflow-hidden">
             <div className="aspect-video relative">
               <Image
-                src={product.image || "/placeholder.svg?height=300&width=600"}
+                src={product.images.main || "/placeholder.svg?height=300&width=600"}
                 alt={product.name}
                 fill
                 className="object-cover"

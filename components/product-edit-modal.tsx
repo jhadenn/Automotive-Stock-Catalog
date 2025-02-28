@@ -31,7 +31,10 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
     category: "",
     material: "",
     status: "Active",
-    image: "/placeholder.svg?height=300&width=300",
+    images: {
+      main: "/placeholder.svg?height=300&width=300",
+      thumbnails: ["/placeholder.svg?height=300&width=300", "/placeholder.svg?height=300&width=300"],
+    },
   })
 
   useEffect(() => {
@@ -48,7 +51,10 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
         category: "Parts",
         material: "",
         status: "Active",
-        image: "/placeholder.svg?height=300&width=300",
+        images: {
+          main :"/placeholder.svg?height=300&width=300",
+          thumbnails: ["/placeholder.svg?height=300&width=300","/placeholder.svg?height=300&width=300"],
+        } 
       })
     }
   }, [product])
@@ -94,16 +100,21 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                   <div className="grid grid-cols-2 gap-2">
                     <div className="col-span-2">
                       <Image
-                        src={formData.image || "/placeholder.svg?height=200&width=300"}
+                        src={formData.images.main}
                         alt={formData.name}
                         width={300}
                         height={200}
                         className="object-cover rounded-md w-full h-auto"
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement
+                          img.src = "/images/placeholder-main.jpg"
+                        }}
+                        priority
                       />
                     </div>
                     <div className="col-span-1">
                       <Image
-                        src={formData.image || "/placeholder.svg?height=100&width=100"}
+                        src={formData.images.main || "/placeholder.svg?height=100&width=100"}
                         alt={formData.name}
                         width={100}
                         height={100}
@@ -112,7 +123,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
                     </div>
                     <div className="col-span-1">
                       <Image
-                        src={formData.image || "/placeholder.svg?height=100&width=100"}
+                        src={formData.images.thumbnails[0] || "/placeholder.svg?height=100&width=100"}
                         alt={formData.name}
                         width={100}
                         height={100}

@@ -14,6 +14,11 @@ export interface Product {
   }
 }
 
+const DEFAULT_IMAGES = {
+  main: "/images/placeholder-main.jpg",
+  thumbnail: "/images/placeholder-thumb.jpg",
+}
+
 export const mockProducts: Product[] = [
   {
     id: "1",
@@ -26,8 +31,8 @@ export const mockProducts: Product[] = [
     material: "Mixed",
     status: "Active",
     images: {
-      main: "/images/2025-mazda-cx5.png",
-      thumbnails: ["/images/2025-mazda-cx5.png", "/images/2025-mazda-cx5.png"],
+      main: "/images/vehicles/2025-mazda-cx5.png",
+      thumbnails: ["/images/vehicles/2025-mazda-cx5-2.png", "/images/vehicles/2025-mazda-cx5-3.png"],
     },
   },
   {

@@ -182,7 +182,7 @@ export default function ProductList() {
                   <td className="px-4 py-3">
                     <div className="h-16 w-16 relative">
                       <Image
-                        src={product.image || "/placeholder.svg?height=64&width=64"}
+                        src={product.images.main || "/placeholder.svg?height=64&width=64"}
                         alt={product.name}
                         fill
                         className="object-cover rounded-md cursor-pointer"
