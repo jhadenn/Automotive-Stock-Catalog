@@ -7,12 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ProductDetailModal from "@/components/product-detail-modal"
 import { useAuth } from "@/components/auth-provider"
+import { Button } from "@/components/ui/button"
 
 export default function CategoriesPage() {
   const { isAuthenticated, isAuthorized } = useAuth()
   const [products] = useState<Product[]>(mockProducts)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState("all")
   const canEdit = isAuthenticated && isAuthorized(["owner", "manager", "employee"])
 
   // Group products by category
@@ -35,6 +37,10 @@ export default function CategoriesPage() {
     setIsModalOpen(false)
   }
 
+  const handleViewAll = (category: string) => {
+    setActiveTab(category.toLowerCase())
+  }
+
   return (
     <div className="space-y-6 py-6">
       <div>
@@ -42,7 +48,7 @@ export default function CategoriesPage() {
         <p className="text-muted-foreground">Browse our inventory by category</p>
       </div>
 
-      <Tabs defaultValue="all" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4 mb-8">
           <TabsTrigger value="all">All Categories</TabsTrigger>
           <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
@@ -56,18 +62,21 @@ export default function CategoriesPage() {
             description="Browse our selection of quality vehicles"
             products={vehicleProducts}
             onViewProduct={handleViewProduct}
+            onViewAll={() => handleViewAll("vehicles")}
           />
           <CategorySection
             title="Parts"
             description="Find the right parts for your vehicle"
             products={partProducts}
             onViewProduct={handleViewProduct}
+            onViewAll={() => handleViewAll("parts")}
           />
           <CategorySection
             title="Tools"
             description="Professional tools for maintenance and repair"
             products={toolProducts}
             onViewProduct={handleViewProduct}
+            onViewAll={() => handleViewAll("tools")}
           />
         </TabsContent>
 
@@ -123,9 +132,17 @@ interface CategorySectionProps {
   products: Product[]
   showAll?: boolean
   onViewProduct: (product: Product) => void
+  onViewAll?: () => void
 }
 
-function CategorySection({ title, description, products, showAll = false, onViewProduct }: CategorySectionProps) {
+function CategorySection({
+  title,
+  description,
+  products,
+  showAll = false,
+  onViewProduct,
+  onViewAll,
+}: CategorySectionProps) {
   // Only show first 3 products unless showAll is true
   const displayProducts = showAll ? products : products.slice(0, 3)
 
@@ -136,13 +153,10 @@ function CategorySection({ title, description, products, showAll = false, onView
           <h2 className="text-2xl font-bold">{title}</h2>
           <p className="text-muted-foreground">{description}</p>
         </div>
-        {!showAll && products.length > 3 && (
-          <button
-            onClick={() => (document.querySelector(`[data-value="${title.toLowerCase()}"]`) as HTMLElement)?.click()}
-            className="text-sm font-medium text-primary hover:underline"
-          >
+        {!showAll && products.length > 3 && onViewAll && (
+          <Button onClick={onViewAll} variant="outline">
             View all {products.length} products
-          </button>
+          </Button>
         )}
       </div>
 
@@ -174,12 +188,9 @@ function CategorySection({ title, description, products, showAll = false, onView
               </div>
             </CardContent>
             <div className="p-4 border-t">
-              <button
-                onClick={() => onViewProduct(product)}
-                className="text-sm font-medium text-primary hover:underline"
-              >
+              <Button onClick={() => onViewProduct(product)} variant="link" className="p-0 h-auto font-semibold">
                 View Details
-              </button>
+              </Button>
             </div>
           </Card>
         ))}
