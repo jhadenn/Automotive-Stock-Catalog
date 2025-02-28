@@ -205,7 +205,7 @@ export default function ProductList() {
                     <div>{product.stock}</div>
                   </td>
                   <td className="px-4 py-3">
-                    <div>${product.price.toFixed(2)} USD</div>
+                    <div>${product.price.toFixed(2)} CAD</div>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">

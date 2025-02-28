@@ -14,17 +14,13 @@ export interface Product {
   }
 }
 
-const DEFAULT_IMAGES = {
-  main: "/images/placeholder-main.jpg",
-  thumbnail: "/images/placeholder-thumb.jpg",
-}
 
 export const mockProducts: Product[] = [
   {
     id: "1",
     name: "2025 Mazda CX-5 SUV",
     description: "Spacious family SUV with excellent fuel economy and modern features",
-    price: 32500.0,
+    price: 32550.0,
     stock: 12,
     sku: "VEH-SUV-2023",
     category: "Vehicles",
@@ -39,15 +35,15 @@ export const mockProducts: Product[] = [
     id: "2",
     name: "2022 BMW M3 Competition",
     description: "Premium sedan with leather interior and advanced safety features",
-    price: 45999.99,
+    price: 90900,
     stock: 8,
     sku: "VEH-SED-2022",
     category: "Vehicles",
     material: "Mixed",
     status: "Active",
     images: {
-      main: "/images/luxury-sedan-main.jpg",
-      thumbnails: ["/images/luxury-sedan-thumb1.jpg", "/images/luxury-sedan-thumb2.jpg"],
+      main: "/images/vehicles/2022-bmw-m3-competition-1.jpg",
+      thumbnails: ["/images/vehicles/2022-bmw-m3-competition-2.jpg", "/images/vehicles/2022-bmw-m3-competition-3.jpg"],
     },
   },
   {
@@ -61,8 +57,8 @@ export const mockProducts: Product[] = [
     material: "Mixed",
     status: "Active",
     images: {
-      main: "/images/electric-hatchback-main.jpg",
-      thumbnails: ["/images/electric-hatchback-thumb1.jpg", "/images/electric-hatchback-thumb2.jpg"],
+      main: "/images/vehicles/2023-tesla-model-y-1.png",
+      thumbnails: ["/images/vehicles/2023-tesla-model-y-2.png", "/images/vehicles/2023-tesla-model-y-3.png"],
     },
   },
 
@@ -78,8 +74,8 @@ export const mockProducts: Product[] = [
     material: "Metal/Ceramic",
     status: "Active",
     images: {
-      main: "/images/brake-kit-main.jpg",
-      thumbnails: ["/images/brake-kit-thumb1.jpg", "/images/brake-kit-thumb2.jpg"],
+      main: "/images/parts/high-performance-brake-kit-1.jpg",
+      thumbnails: ["/images/parts/high-performance-brake-kit-2.jpg", "/images/parts/high-performance-brake-kit-3.jpg"],
     },
   },
   {
@@ -93,8 +89,8 @@ export const mockProducts: Product[] = [
     material: "Synthetic",
     status: "Active",
     images: {
-      main: "/images/air-filter-main.jpg",
-      thumbnails: ["/images/air-filter-thumb1.jpg", "/images/air-filter-thumb2.jpg"],
+      main: "/images/parts/air-filter-system-1.png",
+      thumbnails: ["/images/parts/air-filter-system-2.jpg", "/images/parts/air-filter-system-3.jpg"],
     },
   },
   {
@@ -108,8 +104,8 @@ export const mockProducts: Product[] = [
     material: "LED/Plastic",
     status: "Active",
     images: {
-      main: "/images/led-headlights-main.jpg",
-      thumbnails: ["/images/led-headlights-thumb1.jpg", "/images/led-headlights-thumb2.jpg"],
+      main: "/images/parts/LED-headlight-set-1.jpg",
+      thumbnails: ["/images/parts/LED-headlight-set-2.jpg", "/images/parts/LED-headlight-set-3.jpg"],
     },
   },
   {
@@ -123,8 +119,8 @@ export const mockProducts: Product[] = [
     material: "Metal/Alloy",
     status: "Active",
     images: {
-      main: "/images/suspension-kit-main.jpg",
-      thumbnails: ["/images/suspension-kit-thumb1.jpg", "/images/suspension-kit-thumb2.jpg"],
+      main: "/images/parts/suspension-upgrade-kit-1.jpg",
+      thumbnails: ["/images/parts/suspension-upgrade-kit-2.jpg", "/images/parts/suspension-upgrade-kit-3.jpg"],
     },
   },
 
@@ -140,8 +136,8 @@ export const mockProducts: Product[] = [
     material: "Plastic/Electronic",
     status: "Active",
     images: {
-      main: "/images/diagnostic-scanner-main.jpg",
-      thumbnails: ["/images/diagnostic-scanner-thumb1.jpg", "/images/diagnostic-scanner-thumb2.jpg"],
+      main: "/images/tools/professional-diagnostic-scanner-1.jpg",
+      thumbnails: ["/images/tools/professional-diagnostic-scanner-2.jpg", "/images/tools/professional-diagnostic-scanner-3.jpg"],
     },
   },
   {
@@ -155,8 +151,8 @@ export const mockProducts: Product[] = [
     material: "Steel",
     status: "Active",
     images: {
-      main: "/images/floor-jack-main.jpg",
-      thumbnails: ["/images/floor-jack-thumb1.jpg", "/images/floor-jack-thumb2.jpg"],
+      main: "/images/tools/hydraulic-floor-jack-1.jpg",
+      thumbnails: ["/images/tools/hydraulic-floor-jack-2.jpg", "/images/tools/hydraulic-floor-jack-3.jpg"],
     },
   },
   {
@@ -170,8 +166,8 @@ export const mockProducts: Product[] = [
     material: "Chrome Vanadium",
     status: "Active",
     images: {
-      main: "/images/torque-wrench-main.jpg",
-      thumbnails: ["/images/torque-wrench-thumb1.jpg", "/images/torque-wrench-thumb2.jpg"],
+      main: "/images/tools/torque-wrench-set-1.jpg",
+      thumbnails: ["/images/tools/torque-wrench-set-2.jpg", "/images/tools/torque-wrench-set-3.jpg"],
     },
   },
 ]
