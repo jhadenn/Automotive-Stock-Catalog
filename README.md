@@ -23,7 +23,36 @@ Technologies used in the project:
 *   Next.js
 *   React
 *   Tailwind CSS
-*   Supabase  
+*   Supabase
+
+<h2> Docs </h2>
+
+How to run (website hosting is a work in progress!)
+
+First, create a env.local file in the project's root directory with these environment variables obtained from DOUBLE J DUBZ INC. 
+```
+NEXT_PUBLIC_SUPABASE_URL= *insert url here*
+NEXT_PUBLIC_SUPABASE_ANON_KEY= *insert api key here*
+SUPABASE_SERVICE_ROLE_KEY=*insert role key here*
+
+```
+
+
+To get started, install node_modules by running:
+```console
+npm install
+```
+(Optional) If you want to start from a fresh database with the default mock products run:
+```console
+npm run seed
+```
+
+To run the application run: 
+```console
+npm run dev
+```
+
+
   
 
 
