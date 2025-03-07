@@ -12,7 +12,8 @@ This project will be a comprehensive inventory management and cataloging applica
 Here're some of the project's best features:
 
 *   Creating, deleting, and editing products
-*   Track user session
+*   Login System
+*   Editing Stock Levels
 *   More coming soon...
 
 
