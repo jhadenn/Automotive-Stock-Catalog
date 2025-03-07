@@ -491,7 +491,7 @@ export default function ProductDetailModal({
                       <div>
                         <div className="mb-2">
                           <p className="text-gray-500 text-sm">Stock</p>
-                          <p>{formData.stock} Ready</p>
+                          <p>{formData.stock}</p>
                         </div>
                         
                         <div className="mb-2">
