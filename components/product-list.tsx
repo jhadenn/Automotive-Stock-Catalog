@@ -291,7 +291,7 @@ export default function ProductList({
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete 
-              "{productToDelete?.name}" and remove it from our servers.
+              &quot;{productToDelete?.name}&quot; and remove it from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

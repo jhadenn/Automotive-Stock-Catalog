@@ -24,23 +24,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    // Listen for changes in auth state
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed:', _event, !!session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
+    const checkUser = async () => {
+      try {
+        const { data } = await supabase.auth.getSession()
+        setUser(data.session?.user || null)
+        setLoading(false)
+      } catch (error) {
+        console.error('Error checking auth status:', error)
+        setLoading(false)
+      }
+    }
+    
+    checkUser()
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null)
+      }
+    )
+    
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [supabase.auth])
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({

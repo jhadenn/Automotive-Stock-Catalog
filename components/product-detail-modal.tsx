@@ -3,15 +3,14 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import { X, Upload, PlusIcon } from "lucide-react"
+import { PlusIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import type { Product } from "@/lib/data"
 import Image from "next/image"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog"
 
 interface ProductDetailModalProps {
@@ -179,8 +178,8 @@ export default function ProductDetailModal({
     try {
       // If creating a new product, omit the id field
       if (!product) {
-        const { id, ...productWithoutId } = formData
-        await onSave(productWithoutId as any)
+        const { id: _id, ...productWithoutId } = formData
+        await onSave(productWithoutId as Omit<Product, 'id'>)
       } else {
         await onSave(formData)
       }

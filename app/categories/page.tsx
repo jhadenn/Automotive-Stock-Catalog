@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 
 export default function CategoriesPage() {
   const { isAuthenticated, isAuthorized } = useAuth()
-  const { products, loading, error, addProduct, updateProduct, deleteProduct, loadProducts } = useProducts()
+  const { products, loading, addProduct, updateProduct, deleteProduct, loadProducts } = useProducts()
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -28,19 +28,6 @@ export default function CategoriesPage() {
     loadProducts()
     setSelectedProduct(product)
     setIsEditing(false)
-    setIsModalOpen(true)
-  }
-
-  const handleEditProduct = (product: Product) => {
-    loadProducts()
-    setSelectedProduct(product)
-    setIsEditing(true)
-    setIsModalOpen(true)
-  }
-
-  const handleAddProduct = () => {
-    setSelectedProduct(null)
-    setIsEditing(true)
     setIsModalOpen(true)
   }
 
@@ -73,7 +60,7 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     loadProducts()
-  }, [])
+  }, [loadProducts])
 
   return (
     <div className="space-y-6 py-6">
