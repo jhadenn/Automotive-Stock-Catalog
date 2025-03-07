@@ -9,8 +9,8 @@ import { ProductProvider } from "@/lib/product-context"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Auto Retail Inventory Management",
-  description: "Comprehensive inventory management for auto retail businesses",
+  title: "Auto Inventory",
+  description: "Inventory management for automotive products!",
 }
 
 export default function RootLayout({
