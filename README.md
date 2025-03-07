@@ -34,7 +34,6 @@ First, create a env.local file in the project's root directory with these enviro
 NEXT_PUBLIC_SUPABASE_URL= *insert url here*
 NEXT_PUBLIC_SUPABASE_ANON_KEY= *insert api key here*
 SUPABASE_SERVICE_ROLE_KEY=*insert role key here*
-
 ```
 
 
