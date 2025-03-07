@@ -211,7 +211,7 @@ export default function ProductDetailModal({
                     {formData.name}
                   </DialogTitle>
                   {!isEditing && (
-                    <p className="text-green-600 font-medium">${formData.price.toFixed(2)} USD</p>
+                    <p className="text-green-600 font-medium">${formData.price.toFixed(2)} CAD</p>
                   )}
                 </div>
               </DialogHeader>
