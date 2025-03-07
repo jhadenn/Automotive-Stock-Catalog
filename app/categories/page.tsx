@@ -1,40 +1,67 @@
 "use client"
 
 import { useState } from "react"
-import { mockProducts, type Product } from "@/lib/data"
+import { useProducts } from "@/lib/product-context"
+import { useAuth } from "@/components/auth-provider"
+import type { Product } from "@/lib/types"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ProductDetailModal from "@/components/product-detail-modal"
-import { useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 
 export default function CategoriesPage() {
   const { isAuthenticated, isAuthorized } = useAuth()
-  const [products] = useState<Product[]>(mockProducts)
+  const { products, loading, error, addProduct, updateProduct, deleteProduct } = useProducts()
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [activeTab, setActiveTab] = useState("all")
   const canEdit = isAuthenticated && isAuthorized(["owner", "manager", "employee"])
 
-  // Group products by category
-  const vehicleProducts = products.filter((p) => p.category === "Vehicles")
-  const partProducts = products.filter((p) => p.category === "Parts")
-  const toolProducts = products.filter((p) => p.category === "Tools")
+  // Filter products by category
+  const vehicleProducts = products.filter(p => p.category === 'Vehicles')
+  const partProducts = products.filter(p => p.category === 'Parts')
+  const toolProducts = products.filter(p => p.category === 'Tools')
 
   const handleViewProduct = (product: Product) => {
     setSelectedProduct(product)
+    setIsEditing(false)
     setIsModalOpen(true)
   }
 
-  const handleSaveProduct = (product: Product) => {
-    // Handle save logic here
-    setIsModalOpen(false)
+  const handleEditProduct = (product: Product) => {
+    setSelectedProduct(product)
+    setIsEditing(true)
+    setIsModalOpen(true)
   }
 
-  const handleDeleteProduct = (id: string) => {
-    // Handle delete logic here
-    setIsModalOpen(false)
+  const handleAddProduct = () => {
+    setSelectedProduct(null)
+    setIsEditing(true)
+    setIsModalOpen(true)
+  }
+
+  const handleSaveProduct = async (product: Product) => {
+    try {
+      if (product.id) {
+        await updateProduct(product.id, product)
+      } else {
+        await addProduct(product)
+      }
+      setIsModalOpen(false)
+    } catch (err) {
+      console.error('Error saving product:', err)
+    }
+  }
+
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      await deleteProduct(id)
+      setIsModalOpen(false)
+    } catch (err) {
+      console.error('Error deleting product:', err)
+    }
   }
 
   const handleViewAll = (category: string) => {
@@ -111,15 +138,21 @@ export default function CategoriesPage() {
         </TabsContent>
       </Tabs>
 
-      {isModalOpen && selectedProduct && (
+      
+
+      {isModalOpen && (
         <ProductDetailModal
           product={selectedProduct}
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false)
+            setIsEditing(false)
+          }}
           onSave={handleSaveProduct}
           onDelete={handleDeleteProduct}
-          isEditing={false}
+          isEditing={isEditing}
           canEdit={canEdit}
+          loading={loading}
         />
       )}
     </div>
