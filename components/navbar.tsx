@@ -6,12 +6,11 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/components/auth-provider"
 import { useRouter } from "next/navigation"
 
-import { CarFront, Package, User, LogOut } from "lucide-react"
+import { CarFront, User, LogOut } from "lucide-react"
 import { useState } from "react"
 
 export default function Navbar() {
   const { isAuthenticated, signOut, user } = useAuth()
-  const router = useRouter()
   const pathname = usePathname()
   const [showDropdown, setShowDropdown] = useState(false)
   

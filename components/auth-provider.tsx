@@ -24,29 +24,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const { data } = await supabase.auth.getSession()
-        setUser(data.session?.user || null)
-        setLoading(false)
-      } catch (error) {
-        console.error('Error checking auth status:', error)
-        setLoading(false)
-      }
-    }
-    
-    checkUser()
-    
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user || null)
-      }
-    )
-    
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [supabase.auth])
+    // Check active sessions and sets the user
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    // Listen for changes in auth state
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', _event, !!session)
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
@@ -116,25 +110,4 @@ export const useAuth = () => {
   }
   return context
 }
-
-// You can add this temporary debug code to your login page
-const testAuth = async () => {
-  const supabase = createClientComponentClient()
-  
-  // Test the connection
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-  console.log('Current session:', session)
-  console.log('Session error:', sessionError)
-  
-  // Test sign in
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: 'your-test-email@example.com',
-    password: 'your-test-password'
-  })
-  
-  console.log('Sign in result:', data)
-  console.log('Sign in error:', error)
-}
-
-// Call this function from a button or useEffect
 

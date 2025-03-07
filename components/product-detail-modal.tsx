@@ -178,8 +178,8 @@ export default function ProductDetailModal({
     try {
       // If creating a new product, omit the id field
       if (!product) {
-        const { id: _id, ...productWithoutId } = formData
-        await onSave(productWithoutId as Omit<Product, 'id'>)
+        const { id, ...productWithoutId } = formData
+        await onSave(productWithoutId as any)
       } else {
         await onSave(formData)
       }

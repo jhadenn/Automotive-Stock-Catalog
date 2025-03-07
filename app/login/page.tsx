@@ -14,7 +14,7 @@ export default function LoginPage() {
   const { signIn } = useAuth()
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       await signIn(email, password)

@@ -5,9 +5,9 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/components/auth-provider"
-import { Plus, Filter, Search, Trash2 } from "lucide-react"
+import { Filter, Search } from "lucide-react"
 import ProductDetailModal from "@/components/product-detail-modal"
-import { mockProducts, type Product } from "@/lib/data"
+import { type Product } from "@/lib/data"
 import Image from "next/image"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
@@ -20,7 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { EyeIcon, PencilIcon, TrashIcon, PlusIcon, SearchIcon, FilterIcon } from "lucide-react"
+import { EyeIcon, PencilIcon, TrashIcon, PlusIcon } from "lucide-react"
 
 interface ProductListProps {
   products: Product[]
@@ -291,7 +291,7 @@ export default function ProductList({
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete 
-              &quot;{productToDelete?.name}&quot; and remove it from our servers.
+              "{productToDelete?.name}" and remove it from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
