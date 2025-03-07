@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useProducts } from "@/lib/product-context"
 import { useAuth } from "@/components/auth-provider"
 import type { Product } from "@/lib/types"
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 
 export default function CategoriesPage() {
   const { isAuthenticated, isAuthorized } = useAuth()
-  const { products, loading, error, addProduct, updateProduct, deleteProduct } = useProducts()
+  const { products, loading, error, addProduct, updateProduct, deleteProduct, loadProducts } = useProducts()
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -25,12 +25,14 @@ export default function CategoriesPage() {
   const toolProducts = products.filter(p => p.category === 'Tools')
 
   const handleViewProduct = (product: Product) => {
+    loadProducts()
     setSelectedProduct(product)
     setIsEditing(false)
     setIsModalOpen(true)
   }
 
   const handleEditProduct = (product: Product) => {
+    loadProducts()
     setSelectedProduct(product)
     setIsEditing(true)
     setIsModalOpen(true)
@@ -65,8 +67,13 @@ export default function CategoriesPage() {
   }
 
   const handleViewAll = (category: string) => {
+    loadProducts()
     setActiveTab(category.toLowerCase())
   }
+
+  useEffect(() => {
+    loadProducts()
+  }, [])
 
   return (
     <div className="space-y-6 py-6">
@@ -137,8 +144,6 @@ export default function CategoriesPage() {
           />
         </TabsContent>
       </Tabs>
-
-      
 
       {isModalOpen && (
         <ProductDetailModal

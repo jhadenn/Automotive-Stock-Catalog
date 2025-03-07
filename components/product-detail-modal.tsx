@@ -435,33 +435,37 @@ export default function ProductDetailModal({
                 </div>
               ) : (
                 <div>
-                  <div className="flex mb-6">
-                    {/* Main image - adjust sizing */}
-                    <div className="w-1/2 mr-4">
+                  <div className="flex flex-col md:flex-row mb-6 gap-4">
+                    {/* Main image - larger but preserves aspect ratio */}
+                    <div className="w-full md:w-3/5">
                       <div className="rounded-md overflow-hidden">
                         <Image 
-                          src={formData.images.main || "/placeholder.svg"} 
-                          alt={formData.name} 
-                          width={250}
-                          height={200}
-                          className="object-cover"
+                          src={formData.images.main || "/placeholder.svg"}
+                          alt={formData.name}
+                          width={500}
+                          height={350}
+                          style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                          className="bg-gray-50"
                         />
                       </div>
                     </div>
                     
-                    {/* Thumbnails stacked vertically - make them bigger */}
-                    <div className="grid grid-cols-2 gap-2">
-                      {formData.images.thumbnails?.map((thumbnail, index) => (
-                        <div key={index} className="rounded-md overflow-hidden">
-                          <Image 
-                            src={thumbnail} 
-                            alt={`${formData.name} thumbnail ${index+1}`} 
-                            width={120}  // Increase from 100
-                            height={100}  // Increase from 75
-                            className="object-cover"
-                          />
-                        </div>
-                      ))}
+                    {/* Thumbnails side by side */}
+                    <div className="w-full md:w-2/5">
+                      <div className="grid grid-cols-1 gap-4">
+                        {formData.images.thumbnails?.map((thumbnail, index) => (
+                          <div key={index} className="rounded-md overflow-hidden">
+                            <Image 
+                              src={thumbnail}
+                              alt={`${formData.name} thumbnail ${index+1}`}
+                              width={240}
+                              height={180}
+                              style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                              className="bg-gray-50"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
