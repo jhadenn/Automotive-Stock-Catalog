@@ -38,11 +38,17 @@ SUPABASE_SERVICE_ROLE_KEY=*insert role key here*
 ```
 
 
-To get started, install node_modules by running:
+To get started, clone the repository:
+```console
+git clone https://github.com/jhadenn/Automotive-Stock-Catalog
+```
+
+Then, make sure you have node.js installed, and install node_modules by running: 
 ```console
 npm install
 ```
-(Optional) If you want to start from a fresh database with the default mock products run:
+
+If you want to start from a fresh database with the default mock products run (Optional step: if not ran, our current database will show):
 ```console
 npm run seed
 ```
