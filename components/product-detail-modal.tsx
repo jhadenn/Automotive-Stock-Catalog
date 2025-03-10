@@ -465,6 +465,14 @@ export default function ProductDetailModal({
                     </div>
                   </div>
 
+                  {/* Product Description - Add this section */}
+                  {formData.description && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-bold mb-2">Description</h3>
+                      <p className="text-gray-700">{formData.description}</p>
+                    </div>
+                  )}
+
                   <div className="mb-6">
                     <h3 className="text-lg font-bold">Details</h3>
                     
@@ -491,7 +499,7 @@ export default function ProductDetailModal({
                       <div>
                         <div className="mb-2">
                           <p className="text-gray-500 text-sm">Stock</p>
-                          <p>{formData.stock}</p>
+                          <p>{formData.stock} Ready</p>
                         </div>
                         
                         <div className="mb-2">
@@ -502,7 +510,7 @@ export default function ProductDetailModal({
                         <div className="mb-2">
                           <p className="text-gray-500 text-sm">Status</p>
                           <div className="flex items-center">
-                            <span className="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
+                            <span className={`h-2 w-2 rounded-full ${formData.status === 'Active' ? 'bg-green-500' : 'bg-red-500'} mr-1`}></span>
                             <span>{formData.status}</span>
                           </div>
                         </div>
