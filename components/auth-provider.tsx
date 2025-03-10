@@ -111,24 +111,3 @@ export const useAuth = () => {
   return context
 }
 
-// You can add this temporary debug code to your login page
-const testAuth = async () => {
-  const supabase = createClientComponentClient()
-  
-  // Test the connection
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-  console.log('Current session:', session)
-  console.log('Session error:', sessionError)
-  
-  // Test sign in
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: 'your-test-email@example.com',
-    password: 'your-test-password'
-  })
-  
-  console.log('Sign in result:', data)
-  console.log('Sign in error:', error)
-}
-
-// Call this function from a button or useEffect
-

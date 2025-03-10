@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
+// Page to display the login feature
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const { signIn } = useAuth()
   const router = useRouter()
 
+  // Handeling the user clicking the login after entering their details
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {

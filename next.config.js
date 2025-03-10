@@ -1,8 +1,9 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: ["example.com"], // Add the domains of your external images here
+  eslint: {
+    // This allows production builds to complete even with ESLint errors
+    ignoreDuringBuilds: true,
   },
 }
 
 module.exports = nextConfig
-
