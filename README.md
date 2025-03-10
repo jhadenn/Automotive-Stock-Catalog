@@ -37,7 +37,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY= *insert api key here*
 SUPABASE_SERVICE_ROLE_KEY=*insert role key here*
 ```
 
-
 To get started, clone the repository:
 ```console
 git clone https://github.com/jhadenn/Automotive-Stock-Catalog
