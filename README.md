@@ -57,6 +57,11 @@ To run the application run:
 npm run dev
 ```
 
+## Testing
+To run the available unit tests we have created for the program (i.e CRUD operations and Image Uploading)
+```console
+npm test
+```
 
   
 
