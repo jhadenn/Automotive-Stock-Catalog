@@ -5,7 +5,7 @@ export interface Product {
   price: number
   stock: number
   sku: string
-  category: "Vehicles" | "Parts" | "Tools" | string
+  category: "Vehicles" | "Parts" | "Tools";
   material: string
   status: string
   images: {

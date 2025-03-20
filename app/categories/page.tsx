@@ -187,7 +187,7 @@ export default function CategoriesPage() {
 interface CategorySectionProps {
   title: string
   description: string
-  products: Product
+  products: Product[]
   showAll?: boolean
   onViewProduct: (product: Product) => void
   onViewAll?: () => void

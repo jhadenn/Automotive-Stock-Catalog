@@ -5,9 +5,9 @@ export interface Product {
   price: number
   stock: number
   sku: string
-  category: 'Vehicles' | 'Parts' | 'Tools'
+  category: "Parts" | "Tools" | "Vehicles"
   material: string
-  status: 'Active' | 'Inactive'
+  status: string;
   images: {
     main: string
     thumbnails: string[]

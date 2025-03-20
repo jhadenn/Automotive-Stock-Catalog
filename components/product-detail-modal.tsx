@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import type { Product } from "@/lib/data"
+import type { Product } from "@/lib/types"
 import Image from "next/image"
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog"
 
@@ -17,7 +17,7 @@ interface ProductDetailModalProps {
   product: Product | null
   isOpen: boolean
   onClose: () => void
-  onSave: (product: Product) => void
+  onSave: (product: Product) => void | Promise<void>;
   onDelete: (id: string) => void
   isEditing: boolean
   canEdit: boolean
