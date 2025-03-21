@@ -14,7 +14,8 @@ Here're some of the project's best features:
 *   Creating, deleting, and editing products
 *   Login System
 *   Editing Stock Levels
-*   More coming soon...
+*   Search Bar
+*   Filtration System
 
 
 <h2>💻 Built with</h2>
