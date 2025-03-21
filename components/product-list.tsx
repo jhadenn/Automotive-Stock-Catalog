@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/components/auth-provider"
 import { Filter, Search } from "lucide-react"
 import ProductDetailModal from "@/components/product-detail-modal"
-import { type Product } from "@/lib/data"
+import { type Product } from "@/lib/types"
 import Image from "next/image"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {

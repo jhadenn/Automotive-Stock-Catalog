@@ -15,7 +15,5 @@ call scripts\test.bat
 IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
 ECHO ====================================
-ECHO Setup completed successfully!
-ECHO To start the development server, run:
-ECHO   scripts\dev.bat
+ECHO Setup completed successfully! (To start the development server, run: scripts\dev.bat)
 ECHO ==================================== 
