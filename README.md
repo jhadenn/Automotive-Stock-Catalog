@@ -276,18 +276,6 @@ make seed
 6. Build the application to make sure it builds successfully
 
 
-## Deployment
-
-
-For deployment, you can:
-
-
-1. Build the application with `make build` or `npm run build`
-2. Deploy the built files (in the `.next` directory)
-
-
-Custom deployment commands can be added to the `deploy` target in the Makefile.
-
 
 ## Troubleshooting
 
@@ -303,8 +291,6 @@ Custom deployment commands can be added to the `deploy` target in the Makefile.
 - **Tests failing:**
   Check the test output for details on which tests are failing and why.
 ```
-
-
   
 
 
