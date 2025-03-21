@@ -290,8 +290,3 @@ make seed
 
 - **Tests failing:**
   Check the test output for details on which tests are failing and why.
-```
-  
-
-
-
