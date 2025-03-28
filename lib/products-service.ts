@@ -1,7 +1,16 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { Product } from '@/lib/types'
 
+
+/**
+ * Service for managing products in the Supabase database.
+ */
 export const productsService = {
+    /**
+   * Retrieves all products from the database.
+   * @returns {Promise<Product[]>} A promise resolving to an array of products.
+   * @throws {Error} If fetching fails.
+   */
   async getAll(): Promise<Product[]> {
     const supabase = createClientComponentClient()
     console.log('Fetching products...')
@@ -19,6 +28,12 @@ export const productsService = {
     return data || []
   },
 
+    /**
+   * Retrieves products by category.
+   * @param {string} category - The category to filter products by.
+   * @returns {Promise<Product[]>} A promise resolving to an array of products.
+   * @throws {Error} If fetching fails.
+   */
   async getByCategory(category: string): Promise<Product[]> {
     const supabase = createClientComponentClient()
     const { data, error } = await supabase
@@ -31,6 +46,12 @@ export const productsService = {
     return data
   },
 
+    /**
+   * Retrieves a single product by its ID.
+   * @param {string} id - The product ID.
+   * @returns {Promise<Product | null>} A promise resolving to a product or null if not found.
+   * @throws {Error} If fetching fails.
+   */
   async getById(id: string): Promise<Product | null> {
     const supabase = createClientComponentClient()
     const { data, error } = await supabase
@@ -47,6 +68,12 @@ export const productsService = {
     return data
   },
 
+    /**
+   * Creates a new product in the database.
+   * @param {Omit<Product, 'id'>} productData - The product data excluding the ID.
+   * @returns {Promise<Product>} A promise resolving to the created product.
+   * @throws {Error} If creation fails.
+   */
   async create(productData: Omit<Product, 'id'>): Promise<Product> {
     const supabase = createClientComponentClient()
     console.log('Creating product:', productData)
@@ -81,6 +108,13 @@ export const productsService = {
     return data
   },
 
+    /**
+   * Updates an existing product in the database.
+   * @param {string} id - The ID of the product to update.
+   * @param {Partial<Product>} updates - The updated product fields.
+   * @returns {Promise<Product>} A promise resolving to the updated product.
+   * @throws {Error} If updating fails.
+   */
   async update(id: string, updates: Partial<Product>): Promise<Product> {
     const supabase = createClientComponentClient()
     console.log('Updating product:', { id, updates })
@@ -100,6 +134,12 @@ export const productsService = {
     return data
   },
 
+    /**
+   * Deletes a product from the database.
+   * @param {string} id - The ID of the product to delete.
+   * @returns {Promise<void>} A promise that resolves when the product is deleted.
+   * @throws {Error} If deletion fails.
+   */
   async delete(id: string): Promise<void> {
     const supabase = createClientComponentClient()
     console.log('Attempting to delete product with ID:', id)
