@@ -85,7 +85,7 @@ export default function CategoriesPage() {
   // Load products on component mount
   useEffect(() => {
     loadProducts()
-  },)
+  }, []) // Add empty dependency array to run only on mount
 
   return (
     <div className="space-y-6 py-6">
