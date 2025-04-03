@@ -26,7 +26,9 @@ Technologies used in the project:
 *   Tailwind CSS
 *   Supabase
 
-# Docs: Build Instructions, Testing, Development Server
+<h1 align="center" id="title"> Docs: Build Instructions, Testing, Development Server 📄 </h1>
+
+## Quick Setup
 Prerequisites:
 - Node.js (v18 or later recommended)
 - npm (comes with Node.js)
@@ -52,6 +54,7 @@ SUPABASE_SERVICE_ROLE_KEY=*insert role key here*
    - [Using Windows Scripts](#using-windows-scripts)
    - [Using Unix Scripts](#using-unix-scripts)
    - [Using npm Directly](#using-npm-directly)
+  
 
 
 ## Using Make
