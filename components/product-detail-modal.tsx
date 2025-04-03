@@ -242,7 +242,7 @@ export default function ProductDetailModal({
                               {formData.images.main && (
                                 <Image 
                                   src={formData.images.main} 
-                                  alt="Main product image" 
+                                  alt="" 
                                   fill 
                                   className="object-cover"
                                 />
