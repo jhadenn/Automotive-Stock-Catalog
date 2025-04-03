@@ -26,65 +26,28 @@ Technologies used in the project:
 *   Tailwind CSS
 *   Supabase
 
-<h2> Docs </h2>
-How to run the development server:
-# Prerequisites
-
-
+# Docs: Build Instructions, Testing, Development Server
+Prerequisites:
 - Node.js (v18 or later recommended)
 - npm (comes with Node.js)
 - Git
-
-First, create a .env file in the project's root directory with these environment variables obtained from DOUBLE J DUBZ INC (please email jhaden.goy@ontariotechu.net). 
+  
+Before anything, create a .env file in the project's root directory with these environment variables obtained from DOUBLE J DUBZ INC (please email jhaden.goy@ontariotechu.net). 
 ```
 NEXT_PUBLIC_SUPABASE_URL= *insert url here*
 NEXT_PUBLIC_SUPABASE_ANON_KEY= *insert api key here*
 SUPABASE_SERVICE_ROLE_KEY=*insert role key here*
 ```
 
-To get started, clone the repository:
-```console
-git clone https://github.com/jhadenn/Automotive-Stock-Catalog
-```
-
-Then, make sure you have node.js installed, and install node_modules by running: 
-```console
-npm install
-```
-
-If you want to start from a fresh database with the default mock products run (Optional step: if not ran, our current database will show):
-```console
-npm run seed
-```
-
-To run the application run: 
-```console
-npm run dev
-```
-
-## Testing
-To run the available unit tests we have created for the program (i.e CRUD operations and Image Uploading)
-```console
-npm test
-```
-
-# Build Instructions for Automotive-Stock-Catalog
-
-
-This document provides detailed instructions for building, testing, and running the Automotive-Stock-Catalog application.
-
-
-## Getting Started
-
 
 1. Clone the repository (if you haven't already):
    ```
-   git clone <repository-url>
+   git clone https://github.com/jhadenn/Automotive-Stock-Catalog
    cd Automotive-Stock-Catalog
    ```
 
 
-2. Choose your preferred build method:
+2. Choose your preferred build method (our code supports multiple platforms):
    - [Using Make](#using-make)
    - [Using Windows Scripts](#using-windows-scripts)
    - [Using Unix Scripts](#using-unix-scripts)
