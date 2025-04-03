@@ -81,7 +81,7 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white rounded-lg">
+      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-background rounded-lg">
         <div className="flex justify-between items-center p-4 border-b">
           <DialogTitle className="text-xl font-bold">{formData.name}</DialogTitle>
           <div className="flex gap-2">
@@ -245,16 +245,16 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
             </div>
           </div>
 
-          <DialogFooter className="flex justify-between p-4 border-t bg-gray-50">
+          <DialogFooter className="flex justify-between p-4 border-t bg-muted">
             <Button
               type="button"
               variant="outline"
+              className="bg-background border-destructive text-destructive hover:bg-destructive/10"
               onClick={handleDelete}
-              className="border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600"
             >
               Delete Product
             </Button>
-            <div className="flex gap-2">
+            <div className="space-x-2">
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>

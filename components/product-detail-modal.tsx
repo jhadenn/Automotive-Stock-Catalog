@@ -238,7 +238,7 @@ export default function ProductDetailModal({
                           {/* Main image */}
                           <div className="col-span-1">
                             <Label htmlFor="mainImage" className="block text-xs mb-1">Main Image</Label>
-                            <div className="relative h-24 bg-gray-100 rounded-md overflow-hidden">
+                            <div className="relative h-24 bg-muted rounded-md overflow-hidden">
                               {formData.images.main && (
                                 <Image 
                                   src={formData.images.main} 
@@ -272,7 +272,7 @@ export default function ProductDetailModal({
                             <Label className="block text-xs mb-1">Thumbnails</Label>
                             <div className="flex space-x-2">
                               {/* Thumbnail 1 */}
-                              <div className="relative h-24 w-24 bg-gray-100 rounded-md overflow-hidden">
+                              <div className="relative h-24 w-24 bg-muted rounded-md overflow-hidden">
                                 {formData.images.thumbnails && formData.images.thumbnails[0] && (
                                   <Image 
                                     src={formData.images.thumbnails[0]} 
@@ -301,7 +301,7 @@ export default function ProductDetailModal({
                               </div>
                               
                               {/* Thumbnail 2 */}
-                              <div className="relative h-24 w-24 bg-gray-100 rounded-md overflow-hidden">
+                              <div className="relative h-24 w-24 bg-muted rounded-md overflow-hidden">
                                 {formData.images.thumbnails && formData.images.thumbnails[1] && (
                                   <Image 
                                     src={formData.images.thumbnails[1]} 
@@ -401,11 +401,12 @@ export default function ProductDetailModal({
                           name="category"
                           value={formData.category}
                           onChange={handleChange}
-                          className="w-full p-2 border rounded-md"
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <option value="Vehicles">Vehicles</option>
                           <option value="Parts">Parts</option>
                           <option value="Tools">Tools</option>
+                          <option value="Accessories">Accessories</option>
                         </select>
                       </div>
                       
@@ -438,97 +439,88 @@ export default function ProductDetailModal({
                           name="status"
                           value={formData.status}
                           onChange={handleChange}
-                          className="w-full p-2 border rounded-md"
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <option value="Active">Active</option>
                           <option value="Inactive">Inactive</option>
+                          <option value="Out of Stock">Out of Stock</option>
                         </select>
                       </div>
                     </div>
                   ) : (
-                    <div>
-                      <div className="flex flex-col md:flex-row mb-6 gap-4">
-                        {/* Main image - larger but preserves aspect ratio */}
-                        <div className="w-full md:w-3/5">
-                          <div className="rounded-md overflow-hidden">
-                            <Image 
-                              src={formData.images.main || "/placeholder.svg"}
-                              alt={formData.name}
-                              width={500}
-                              height={350}
-                              style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-                              className="bg-gray-50"
-                            />
-                          </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        {/* Product image gallery */}
+                        <div className="rounded-md overflow-hidden mb-4">
+                          <Image
+                            src={formData.images.main || "/placeholder.svg"}
+                            alt={formData.name}
+                            width={400}
+                            height={300}
+                            className="w-full h-auto object-cover"
+                          />
                         </div>
                         
-                        {/* Thumbnails side by side */}
-                        <div className="w-full md:w-2/5">
-                          <div className="grid grid-cols-1 gap-4">
-                            {formData.images.thumbnails?.map((thumbnail, index) => (
-                              <div key={index} className="rounded-md overflow-hidden">
-                                <Image 
-                                  src={thumbnail}
-                                  alt={`${formData.name} thumbnail ${index+1}`}
-                                  width={240}
-                                  height={180}
-                                  style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-                                  className="bg-gray-50"
-                                />
-                              </div>
-                            ))}
+                        {/* Thumbnails gallery */}
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="overflow-hidden rounded-md">
+                            <Image
+                              src={formData.images.main || "/placeholder.svg"}
+                              alt={`${formData.name} thumbnail 1`}
+                              width={100}
+                              height={100}
+                              className="w-full h-auto object-cover"
+                            />
                           </div>
+                          {formData.images.thumbnails?.map((thumb, idx) => (
+                            <div key={idx} className="overflow-hidden rounded-md">
+                              <Image
+                                src={thumb || "/placeholder.svg"}
+                                alt={`${formData.name} thumbnail ${idx + 2}`}
+                                width={100}
+                                height={100}
+                                className="w-full h-auto object-cover"
+                              />
+                            </div>
+                          ))}
                         </div>
                       </div>
 
-                      {/* Product Description - Add this section */}
-                      {formData.description && (
-                        <div className="mb-6">
-                          <h3 className="text-lg font-bold mb-2">Description</h3>
-                          <p className="text-gray-700">{formData.description}</p>
+                      <div className="space-y-6">
+                        <div>
+                          <h3 className="text-lg font-semibold">Description</h3>
+                          <p className="mt-2">{formData.description}</p>
                         </div>
-                      )}
-
-                      <div className="mb-6">
-                        <h3 className="text-lg font-bold">Details</h3>
                         
-                        <div className="grid grid-cols-2 gap-4 mt-2">
-                          {/* Left column */}
+                        <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <div className="mb-2">
-                              <p className="text-gray-500 text-sm">SKU</p>
-                              <p>{formData.sku}</p>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <p className="text-gray-500 text-sm">Price</p>
-                              <p>${formData.price.toFixed(2)}</p>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <p className="text-gray-500 text-sm">Category</p>
-                              <p>{formData.category}</p>
-                            </div>
+                            <h4 className="text-sm text-muted-foreground">SKU</h4>
+                            <p className="font-medium">{formData.sku}</p>
                           </div>
                           
-                          {/* Right column */}
                           <div>
-                            <div className="mb-2">
-                              <p className="text-gray-500 text-sm">Stock</p>
-                              <p>{formData.stock} Ready</p>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <p className="text-gray-500 text-sm">Material</p>
-                              <p>{formData.material}</p>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <p className="text-gray-500 text-sm">Status</p>
-                              <div className="flex items-center">
-                                <span className={`h-2 w-2 rounded-full ${formData.status === 'Active' ? 'bg-green-500' : 'bg-red-500'} mr-1`}></span>
-                                <span>{formData.status}</span>
-                              </div>
+                            <h4 className="text-sm text-muted-foreground">Stock</h4>
+                            <p className="font-medium">{formData.stock} units</p>
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-sm text-muted-foreground">Category</h4>
+                            <p className="font-medium">{formData.category}</p>
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-sm text-muted-foreground">Material</h4>
+                            <p className="font-medium">{formData.material || "Not specified"}</p>
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-sm text-muted-foreground">Status</h4>
+                            <div className="flex items-center">
+                              <div className={`h-2 w-2 rounded-full ${
+                                formData.status === "Active" ? "bg-green-500" : 
+                                formData.status === "Inactive" ? "bg-gray-500" : "bg-red-500"
+                              } mr-2`}></div>
+                              <span>{formData.status}</span>
                             </div>
                           </div>
                         </div>
@@ -536,14 +528,14 @@ export default function ProductDetailModal({
                     </div>
                   )}
                 </div>
-
-                <div className="flex justify-between p-4 border-t bg-gray-50">
+                
+                <div className="flex justify-between p-4 border-t bg-muted">
                   {product && product.id && canEdit && (
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setShowDeleteAlert(true)}
-                      className="border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600"
+                      className="border-destructive text-destructive hover:bg-destructive/10 bg-background"
                     >
                       Delete Product
                     </Button>
@@ -578,23 +570,17 @@ export default function ProductDetailModal({
       </DialogContent>
       
       <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-background">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure you want to delete this product?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the product
-              and remove it from our servers.
+              and remove all associated data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => {
-                handleDelete();
-                setShowDeleteAlert(false);
-              }}
-              className="bg-red-500 text-white hover:bg-red-600"
-            >
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
