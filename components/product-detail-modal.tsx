@@ -8,14 +8,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import type { Product } from "@/lib/types"
 import Image from "next/image"
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog"
 import { ProductHistory } from "@/components/product-history"
 import { TabsList, TabsTrigger, Tabs, TabsContent } from "@/components/ui/tabs"
-import { AnalyticsService } from "@/lib/analytics-service"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface ProductDetailModalProps {
   product: Product | null
@@ -180,33 +178,6 @@ export default function ProductDetailModal({
     console.log('Submitting form with data:', formData)
     
     try {
-      // If product exists and stock has changed, record the stock change
-      if (product && product.stock !== formData.stock) {
-        const analyticsService = new AnalyticsService()
-        
-        // Determine the event type based on the stock change
-        let eventType: 'update' | 'restock' | 'sale' | 'adjustment' = 'update'
-        if (formData.stock > product.stock) {
-          eventType = 'restock'
-        } else if (formData.stock < product.stock) {
-          eventType = 'sale'
-        }
-        
-        try {
-          await analyticsService.recordStockChange(
-            product.id,
-            product.stock,
-            formData.stock,
-            eventType,
-            `Stock ${eventType} from ${product.stock} to ${formData.stock}`
-          )
-          console.log('Stock change recorded successfully')
-        } catch (error) {
-          console.error('Error recording stock change:', error)
-          // Continue with save even if recording fails
-        }
-      }
-      
       // If creating a new product, omit the id field
       if (!product) {
         const { id, ...productWithoutId } = formData
@@ -228,22 +199,16 @@ export default function ProductDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className="sm:max-w-[800px] p-0 bg-background"
-      >
+      <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden bg-background rounded-lg">
         <DialogHeader className="p-4 border-b">
           <DialogTitle>{isEditing ? 'Edit' : ''} {formData.name || 'New Product'}</DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="details" className="w-full">
-          <div className="border-b dark:border-gray-700">
-            <TabsList className="bg-transparent">
-              <TabsTrigger value="details" className="data-[state=active]:bg-background">Product Details</TabsTrigger>
-              {product && (
-                <TabsTrigger value="history" className="data-[state=active]:bg-background">Stock History</TabsTrigger>
-              )}
-            </TabsList>
-          </div>
+        <Tabs defaultValue={isEditing ? "edit" : "details"} className="w-full">
+          <TabsList className="grid grid-cols-2 mx-4 mt-2">
+            <TabsTrigger value="details">Product Details</TabsTrigger>
+            {product && <TabsTrigger value="history">Stock History</TabsTrigger>}
+          </TabsList>
           
           <TabsContent value="details" className="p-0">
             {loading ? (
@@ -273,7 +238,7 @@ export default function ProductDetailModal({
                           {/* Main image */}
                           <div className="col-span-1">
                             <Label htmlFor="mainImage" className="block text-xs mb-1">Main Image</Label>
-                            <div className="relative h-24 bg-muted rounded-md overflow-hidden">
+                            <div className="relative h-24 bg-gray-100 rounded-md overflow-hidden">
                               {formData.images.main && (
                                 <Image 
                                   src={formData.images.main} 
@@ -307,7 +272,7 @@ export default function ProductDetailModal({
                             <Label className="block text-xs mb-1">Thumbnails</Label>
                             <div className="flex space-x-2">
                               {/* Thumbnail 1 */}
-                              <div className="relative h-24 w-24 bg-muted rounded-md overflow-hidden">
+                              <div className="relative h-24 w-24 bg-gray-100 rounded-md overflow-hidden">
                                 {formData.images.thumbnails && formData.images.thumbnails[0] && (
                                   <Image 
                                     src={formData.images.thumbnails[0]} 
@@ -336,7 +301,7 @@ export default function ProductDetailModal({
                               </div>
                               
                               {/* Thumbnail 2 */}
-                              <div className="relative h-24 w-24 bg-muted rounded-md overflow-hidden">
+                              <div className="relative h-24 w-24 bg-gray-100 rounded-md overflow-hidden">
                                 {formData.images.thumbnails && formData.images.thumbnails[1] && (
                                   <Image 
                                     src={formData.images.thumbnails[1]} 
@@ -377,7 +342,6 @@ export default function ProductDetailModal({
                           value={formData.name}
                           onChange={handleChange}
                           required
-                          className="bg-background"
                         />
                       </div>
                       
@@ -389,7 +353,6 @@ export default function ProductDetailModal({
                           value={formData.description}
                           onChange={handleChange}
                           rows={3}
-                          className="bg-background"
                         />
                       </div>
                       
@@ -405,7 +368,7 @@ export default function ProductDetailModal({
                           value={formData.price}
                           onChange={handleChange}
                           required
-                          className={validationErrors.price ? "border-red-500 bg-background" : "bg-background"}
+                          className={validationErrors.price ? "border-red-500" : ""}
                         />
                         {validationErrors.price && (
                           <p className="text-red-500 text-xs mt-1">{validationErrors.price}</p>
@@ -423,7 +386,7 @@ export default function ProductDetailModal({
                           value={formData.stock}
                           onChange={handleChange}
                           required
-                          className={validationErrors.stock ? "border-red-500 bg-background" : "bg-background"}
+                          className={validationErrors.stock ? "border-red-500" : ""}
                         />
                         {validationErrors.stock && (
                           <p className="text-red-500 text-xs mt-1">{validationErrors.stock}</p>
@@ -433,16 +396,17 @@ export default function ProductDetailModal({
                       {/* Category & Material */}
                       <div className="space-y-2">
                         <Label htmlFor="category">Category</Label>
-                        <Select name="category" defaultValue={formData.category}>
-                          <SelectTrigger className="col-span-3 bg-background">
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Vehicles">Vehicles</SelectItem>
-                            <SelectItem value="Parts">Parts</SelectItem>
-                            <SelectItem value="Tools">Tools</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <select
+                          id="category"
+                          name="category"
+                          value={formData.category}
+                          onChange={handleChange}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="Vehicles">Vehicles</option>
+                          <option value="Parts">Parts</option>
+                          <option value="Tools">Tools</option>
+                        </select>
                       </div>
                       
                       <div className="space-y-2">
@@ -452,7 +416,6 @@ export default function ProductDetailModal({
                           name="material"
                           value={formData.material}
                           onChange={handleChange}
-                          className="bg-background"
                         />
                       </div>
                       
@@ -465,21 +428,21 @@ export default function ProductDetailModal({
                           value={formData.sku}
                           onChange={handleChange}
                           required
-                          className="bg-background"
                         />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="status">Status</Label>
-                        <Select name="status" defaultValue={formData.status}>
-                          <SelectTrigger className="bg-background">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Active">Active</SelectItem>
-                            <SelectItem value="Inactive">Inactive</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <select
+                          id="status"
+                          name="status"
+                          value={formData.status}
+                          onChange={handleChange}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                        </select>
                       </div>
                     </div>
                   ) : (
@@ -494,7 +457,7 @@ export default function ProductDetailModal({
                               width={500}
                               height={350}
                               style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-                              className="bg-muted"
+                              className="bg-gray-50"
                             />
                           </div>
                         </div>
@@ -510,7 +473,7 @@ export default function ProductDetailModal({
                                   width={240}
                                   height={180}
                                   style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-                                  className="bg-muted"
+                                  className="bg-gray-50"
                                 />
                               </div>
                             ))}
@@ -522,7 +485,7 @@ export default function ProductDetailModal({
                       {formData.description && (
                         <div className="mb-6">
                           <h3 className="text-lg font-bold mb-2">Description</h3>
-                          <p className="text-muted-foreground dark:text-gray-300">{formData.description}</p>
+                          <p className="text-gray-700">{formData.description}</p>
                         </div>
                       )}
 
@@ -533,17 +496,17 @@ export default function ProductDetailModal({
                           {/* Left column */}
                           <div>
                             <div className="mb-2">
-                              <p className="text-muted-foreground text-sm">SKU</p>
+                              <p className="text-gray-500 text-sm">SKU</p>
                               <p>{formData.sku}</p>
                             </div>
                             
                             <div className="mb-2">
-                              <p className="text-muted-foreground text-sm">Price</p>
+                              <p className="text-gray-500 text-sm">Price</p>
                               <p>${formData.price.toFixed(2)}</p>
                             </div>
                             
                             <div className="mb-2">
-                              <p className="text-muted-foreground text-sm">Category</p>
+                              <p className="text-gray-500 text-sm">Category</p>
                               <p>{formData.category}</p>
                             </div>
                           </div>
@@ -551,17 +514,17 @@ export default function ProductDetailModal({
                           {/* Right column */}
                           <div>
                             <div className="mb-2">
-                              <p className="text-muted-foreground text-sm">Stock</p>
+                              <p className="text-gray-500 text-sm">Stock</p>
                               <p>{formData.stock} Ready</p>
                             </div>
                             
                             <div className="mb-2">
-                              <p className="text-muted-foreground text-sm">Material</p>
+                              <p className="text-gray-500 text-sm">Material</p>
                               <p>{formData.material}</p>
                             </div>
                             
                             <div className="mb-2">
-                              <p className="text-muted-foreground text-sm">Status</p>
+                              <p className="text-gray-500 text-sm">Status</p>
                               <div className="flex items-center">
                                 <span className={`h-2 w-2 rounded-full ${formData.status === 'Active' ? 'bg-green-500' : 'bg-red-500'} mr-1`}></span>
                                 <span>{formData.status}</span>
@@ -574,13 +537,13 @@ export default function ProductDetailModal({
                   )}
                 </div>
 
-                <DialogFooter className="p-4 border-t bg-muted/20">
+                <div className="flex justify-between p-4 border-t bg-gray-50">
                   {product && product.id && canEdit && (
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setShowDeleteAlert(true)}
-                      className="border-red-500 text-red-500 hover:bg-red-500/10 dark:hover:bg-red-950/30 hover:text-red-600"
+                      className="border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600"
                     >
                       Delete Product
                     </Button>
@@ -603,7 +566,7 @@ export default function ProductDetailModal({
                       </Button>
                     )}
                   </div>
-                </DialogFooter>
+                </div>
               </form>
             )}
           </TabsContent>
