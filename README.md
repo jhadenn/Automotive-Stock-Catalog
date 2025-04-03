@@ -3,19 +3,18 @@
 # About 
 <p id="description">
 
-This project will be a comprehensive inventory management and cataloging application for an auto retail business. It will be the centre of the store's inventory management for vehicles, parts, and tools, and its functionality will cater towards different users - owners, managers, employees, and customers. The application will allow for the adding, editing, and removing of products, searching and filtering the catalog, managing stock levels, and secure access control. The application will also offer features such as guest browsing and relevancy-based searching for customers, and analytics reporting to drive decision-making.
+This project is a comprehensive inventory management and cataloging application for an auto retail business. It will be the centre of the store's inventory management for vehicles, parts, and tools, and its functionality will cater towards different users - owners, managers, employees, and customers. The application will allow for the adding, editing, and removing of products, searching and filtering the catalog, managing stock levels, and secure access control. The application will also offer features such as guest browsing and relevancy-based searching for customers, and analytics reporting to drive decision-making.
 
-  
+* [LINK TO WEB APPLICATION](https://automotive-stock-catalog.vercel.app/)
 <h2>🧐 Features</h2>
 
-
-Here're some of the project's best features:
+Here are some of the project's best features:
 
 *   Creating, deleting, and editing products
 *   Login System
-*   Editing Stock Levels
-*   Search Bar
-*   Filtration System
+*   Search Bar + Relevant Results Functionality
+*   Organized product filtering
+*   Secure access control
 
 
 <h2>💻 Built with</h2>
@@ -28,10 +27,15 @@ Technologies used in the project:
 *   Supabase
 
 <h2> Docs </h2>
+How to run the development server:
+# Prerequisites
 
-How to run (website hosting is a work in progress!)
 
-First, create a env.local file in the project's root directory with these environment variables obtained from DOUBLE J DUBZ INC (please email jhaden.goy@ontariotechu.net). 
+- Node.js (v18 or later recommended)
+- npm (comes with Node.js)
+- Git
+
+First, create a .env file in the project's root directory with these environment variables obtained from DOUBLE J DUBZ INC (please email jhaden.goy@ontariotechu.net). 
 ```
 NEXT_PUBLIC_SUPABASE_URL= *insert url here*
 NEXT_PUBLIC_SUPABASE_ANON_KEY= *insert api key here*
@@ -70,18 +74,10 @@ npm test
 This document provides detailed instructions for building, testing, and running the Automotive-Stock-Catalog application.
 
 
-## Prerequisites
-
-
-- Node.js (v18 or later recommended)
-- npm (comes with Node.js)
-- Git
-
-
 ## Getting Started
 
 
-1. Clone the repository:
+1. Clone the repository (if you haven't already):
    ```
    git clone <repository-url>
    cd Automotive-Stock-Catalog
