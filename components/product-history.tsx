@@ -28,6 +28,16 @@ interface ProductHistoryProps {
 export function ProductHistory({ product }: ProductHistoryProps) {
   const [loading, setLoading] = useState(true)
   const [history, setHistory] = useState<ProductHistory | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [activeTab, setActiveTab] = useState("history")
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshTrigger(prev => prev + 1)
+    }, 10000)
+    
+    return () => clearInterval(interval)
+  }, [])
   
   useEffect(() => {
     const fetchHistory = async () => {
@@ -44,17 +54,25 @@ export function ProductHistory({ product }: ProductHistoryProps) {
     }
     
     fetchHistory()
-  }, [product.id])
+  }, [product.id, refreshTrigger])
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat('en-US', { 
+    
+    const formattedDate = new Intl.DateTimeFormat('en-US', { 
+      weekday: 'short',
       month: 'short', 
       day: 'numeric', 
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric'
     }).format(date)
+    
+    const formattedTime = new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    }).format(date)
+    
+    return `${formattedDate} at ${formattedTime}`
   }
   
   const getEventTypeLabel = (eventType: StockEvent['eventType']) => {
@@ -112,7 +130,7 @@ export function ProductHistory({ product }: ProductHistoryProps) {
         <CardDescription>Track inventory changes and performance metrics for this product.</CardDescription>
       </CardHeader>
       
-      <Tabs defaultValue="history">
+      <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="history">
         <TabsList className="mx-6">
           <TabsTrigger value="history" className="flex items-center gap-1">
             <LineChart className="h-4 w-4" />
@@ -126,37 +144,43 @@ export function ProductHistory({ product }: ProductHistoryProps) {
         
         <TabsContent value="history" className="p-0">
           <CardContent className="p-6">
-            <div className="space-y-4">
-              {history.events.map((event, index) => (
-                <div 
-                  key={event.id || index}
-                  className="flex justify-between items-start border-b pb-3"
-                >
-                  <div>
-                    <div className="font-medium flex items-center gap-1">
-                      <span className={getEventTypeColor(event.eventType)}>
-                        {getEventTypeLabel(event.eventType)}
-                      </span>
-                      {event.changeAmount > 0 && (
-                        <span className="text-green-500">+{event.changeAmount}</span>
-                      )}
-                      {event.changeAmount < 0 && (
-                        <span className="text-red-500">{event.changeAmount}</span>
-                      )}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {formatDate(event.timestamp)}
-                    </div>
-                    {event.notes && <div className="text-sm mt-1">{event.notes}</div>}
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium">New Stock: {event.newStock}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Previous: {event.previousStock}
-                    </div>
-                  </div>
+            <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
+              {history.events.length === 0 ? (
+                <div className="text-center py-6 text-muted-foreground">
+                  <p>No stock changes have been recorded yet.</p>
                 </div>
-              ))}
+              ) : (
+                history.events.map((event, index) => (
+                  <div 
+                    key={event.id || index}
+                    className="flex justify-between items-start border-b pb-3"
+                  >
+                    <div>
+                      <div className="font-medium flex items-center gap-1">
+                        <span className={getEventTypeColor(event.eventType)}>
+                          {getEventTypeLabel(event.eventType)}
+                        </span>
+                        {event.changeAmount > 0 && (
+                          <span className="text-green-500">+{event.changeAmount}</span>
+                        )}
+                        {event.changeAmount < 0 && (
+                          <span className="text-red-500">{event.changeAmount}</span>
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {formatDate(event.timestamp)}
+                      </div>
+                      {event.notes && <div className="text-sm mt-1">{event.notes}</div>}
+                    </div>
+                    <div className="text-right">
+                      <div className="font-medium">New Stock: {event.newStock}</div>
+                      <div className="text-sm text-muted-foreground">
+                        Previous: {event.previousStock}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </CardContent>
         </TabsContent>

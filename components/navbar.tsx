@@ -16,7 +16,8 @@ import {
   X, 
   Grid3X3,
   Settings,
-  ChevronRight
+  ChevronRight,
+  HelpCircle
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { 
@@ -52,8 +53,12 @@ export default function Navbar() {
     try {
       console.log('Logging out...')
       await signOut()
+      // No need to do anything else since signOut in auth provider handles redirection
     } catch (error) {
       console.error('Error signing out:', error)
+      // Even if there's an error, we still want to redirect the user
+      // This ensures the user doesn't get stuck if the logout fails
+      window.location.href = '/'
     }
   }
 
@@ -107,12 +112,20 @@ export default function Navbar() {
             </span>
           </NavLink>
           {isAuthenticated && (
-            <NavLink href="/alerts">
-              <span className="flex items-center gap-1.5">
-                <BellRing className="h-4 w-4" />
-                Alerts
-              </span>
-            </NavLink>
+            <>
+              <NavLink href="/alerts">
+                <span className="flex items-center gap-1.5">
+                  <BellRing className="h-4 w-4" />
+                  Alerts
+                </span>
+              </NavLink>
+              <NavLink href="/help">
+                <span className="flex items-center gap-1.5">
+                  <HelpCircle className="h-4 w-4" />
+                  Help
+                </span>
+              </NavLink>
+            </>
           )}
         </nav>
 
@@ -186,16 +199,28 @@ export default function Navbar() {
               <span>Categories</span>
             </Link>
             {isAuthenticated && (
-              <Link
-                href="/alerts"
-                className={`flex items-center space-x-2 rounded-lg px-3 py-2 ${
-                  pathname === "/alerts" ? "bg-primary/10 text-primary" : "hover:bg-muted"
-                }`}
-                onClick={() => setShowMobileMenu(false)}
-              >
-                <BellRing className="h-5 w-5" />
-                <span>Alerts</span>
-              </Link>
+              <>
+                <Link
+                  href="/alerts"
+                  className={`flex items-center space-x-2 rounded-lg px-3 py-2 ${
+                    pathname === "/alerts" ? "bg-primary/10 text-primary" : "hover:bg-muted"
+                  }`}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <BellRing className="h-5 w-5" />
+                  <span>Alerts</span>
+                </Link>
+                <Link
+                  href="/help"
+                  className={`flex items-center space-x-2 rounded-lg px-3 py-2 ${
+                    pathname === "/help" || pathname.startsWith("/help/") ? "bg-primary/10 text-primary" : "hover:bg-muted"
+                  }`}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <HelpCircle className="h-5 w-5" />
+                  <span>Help</span>
+                </Link>
+              </>
             )}
           </nav>
         </div>

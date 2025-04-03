@@ -10,8 +10,11 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Auto Inventory",
-  description: "Inventory management for automotive products!",
+  title: {
+    template: "%s | Auto Inventory",
+    default: "Auto Inventory - Automotive Stock Management"
+  },
+  description: "Manage your automotive inventory with ease",
 }
 
 export default function RootLayout({

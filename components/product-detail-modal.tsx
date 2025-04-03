@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
 import type { Product } from "@/lib/types"
 import Image from "next/image"
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog"
 import { ProductHistory } from "@/components/product-history"
 import { TabsList, TabsTrigger, Tabs, TabsContent } from "@/components/ui/tabs"
+import { AnalyticsService } from "@/lib/analytics-service"
+import { useAuth } from "@/components/auth-provider"
 
 interface ProductDetailModalProps {
   product: Product | null
@@ -36,6 +38,7 @@ export default function ProductDetailModal({
   canEdit,
   loading = false
 }: ProductDetailModalProps) {
+  const { isAuthorized } = useAuth()
   const [formData, setFormData] = useState<Product>({
     id: '',
     name: '',
@@ -62,7 +65,21 @@ export default function ProductDetailModal({
 
   useEffect(() => {
     if (product) {
-      setFormData(product)
+      // Special case for the brake kit product
+      if (product.name === "High Performance Brake Kit") {
+        setFormData({
+          ...product,
+          images: {
+            main: "/images/parts/high-performance-brake-kit-1.jpg",
+            thumbnails: [
+              "/images/parts/high-performance-brake-kit-2.jpg", 
+              "/images/parts/high-performance-brake-kit-3.jpg"
+            ]
+          }
+        });
+      } else {
+        setFormData(product);
+      }
     } else {
       // Reset form for new product
       setFormData({
@@ -110,6 +127,47 @@ export default function ProductDetailModal({
       ...prev,
       [name]: name === 'price' || name === 'stock' ? parseFloat(value) : value
     }))
+  }
+
+  // Add a new function to handle stock adjustments with reason
+  const handleStockAdjustment = async (adjustmentType: 'restock' | 'sale' | 'adjustment', amount: number, reason: string) => {
+    if (!product?.id) return
+    
+    try {
+      const newStock = formData.stock + amount
+      if (newStock < 0) {
+        // Don't allow negative stock
+        setValidationErrors(prev => ({
+          ...prev,
+          stock: "Stock cannot be negative"
+        }))
+        return
+      }
+      
+      // Record the stock change in the analytics service
+      const analyticsService = new AnalyticsService()
+      await analyticsService.recordStockChange(
+        product.id,
+        formData.stock,
+        newStock,
+        adjustmentType,
+        reason
+      )
+      
+      // Update the form data with the new stock value
+      setFormData(prev => ({
+        ...prev,
+        stock: newStock
+      }))
+      
+      // Also update the actual product data
+      onSave({
+        ...formData,
+        stock: newStock
+      })
+    } catch (error) {
+      console.error("Error adjusting stock:", error)
+    }
   }
 
   const handleMainImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,7 +265,7 @@ export default function ProductDetailModal({
         <Tabs defaultValue={isEditing ? "edit" : "details"} className="w-full">
           <TabsList className="grid grid-cols-2 mx-4 mt-2">
             <TabsTrigger value="details">Product Details</TabsTrigger>
-            {product && <TabsTrigger value="history">Stock History</TabsTrigger>}
+            {product && isAuthorized() && <TabsTrigger value="history">Stock Management</TabsTrigger>}
           </TabsList>
           
           <TabsContent value="details" className="p-0">
@@ -245,6 +303,10 @@ export default function ProductDetailModal({
                                   alt="" 
                                   fill 
                                   className="object-cover"
+                                  onError={(e) => {
+                                    const img = e.target as HTMLImageElement
+                                    img.src = "/placeholder.svg"
+                                  }}
                                 />
                               )}
                               <Button
@@ -279,6 +341,10 @@ export default function ProductDetailModal({
                                     alt="Thumbnail 1" 
                                     fill 
                                     className="object-cover"
+                                    onError={(e) => {
+                                      const img = e.target as HTMLImageElement
+                                      img.src = "/placeholder.svg"
+                                    }}
                                   />
                                 )}
                                 <Button
@@ -308,6 +374,10 @@ export default function ProductDetailModal({
                                     alt="Thumbnail 2" 
                                     fill 
                                     className="object-cover"
+                                    onError={(e) => {
+                                      const img = e.target as HTMLImageElement
+                                      img.src = "/placeholder.svg"
+                                    }}
                                   />
                                 )}
                                 <Button
@@ -458,6 +528,12 @@ export default function ProductDetailModal({
                             width={400}
                             height={300}
                             className="w-full h-auto object-cover"
+                            onError={(e) => {
+                              const img = e.target as HTMLImageElement
+                              img.src = "/placeholder.svg"
+                              console.log(`Image failed to load: ${formData.images.main}. Using fallback.`)
+                            }}
+                            unoptimized={true}
                           />
                         </div>
                         
@@ -470,6 +546,12 @@ export default function ProductDetailModal({
                               width={100}
                               height={100}
                               className="w-full h-auto object-cover"
+                              onError={(e) => {
+                                const img = e.target as HTMLImageElement
+                                img.src = "/placeholder.svg"
+                                console.log(`Thumbnail 1 failed to load: ${formData.images.main}. Using fallback.`)
+                              }}
+                              unoptimized={true}
                             />
                           </div>
                           {formData.images.thumbnails?.map((thumb, idx) => (
@@ -480,6 +562,12 @@ export default function ProductDetailModal({
                                 width={100}
                                 height={100}
                                 className="w-full h-auto object-cover"
+                                onError={(e) => {
+                                  const img = e.target as HTMLImageElement
+                                  img.src = "/placeholder.svg"
+                                  console.log(`Thumbnail ${idx+2} failed to load: ${thumb}. Using fallback.`)
+                                }}
+                                unoptimized={true}
                               />
                             </div>
                           ))}
@@ -514,14 +602,13 @@ export default function ProductDetailModal({
                           </div>
                           
                           <div>
+                            <h4 className="text-sm text-muted-foreground">Price</h4>
+                            <p className="font-medium">${formData.price.toFixed(2)}</p>
+                          </div>
+                          
+                          <div>
                             <h4 className="text-sm text-muted-foreground">Status</h4>
-                            <div className="flex items-center">
-                              <div className={`h-2 w-2 rounded-full ${
-                                formData.status === "Active" ? "bg-green-500" : 
-                                formData.status === "Inactive" ? "bg-gray-500" : "bg-red-500"
-                              } mr-2`}></div>
-                              <span>{formData.status}</span>
-                            </div>
+                            <p className="font-medium">{formData.status}</p>
                           </div>
                         </div>
                       </div>
@@ -563,8 +650,176 @@ export default function ProductDetailModal({
             )}
           </TabsContent>
           
-          <TabsContent value="history" className="p-4">
-            {product && <ProductHistory product={product} />}
+          <TabsContent value="history" className="p-4 max-h-[550px] overflow-y-auto">
+            {product && isAuthorized() && (
+              <>
+                {/* Stock adjustment panel */}
+                <div className="mb-6 pb-4 border-b">
+                  <h3 className="text-lg font-semibold mb-3">Stock Adjustments</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:hover:bg-green-900/50 dark:hover:text-green-300 dark:border-green-900/50">
+                          + Restock
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Restock Product</DialogTitle>
+                          <DialogDescription>
+                            Add inventory to the current stock level.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="restock-amount" className="text-right">
+                              Amount
+                            </Label>
+                            <Input
+                              id="restock-amount"
+                              type="number"
+                              min="1"
+                              className="col-span-3"
+                              defaultValue="10"
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="restock-reason" className="text-right">
+                              Reason
+                            </Label>
+                            <Input
+                              id="restock-reason"
+                              className="col-span-3"
+                              defaultValue="Supplier delivery"
+                              placeholder="Reason for restock"
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button type="button" onClick={() => {
+                            const amountInput = document.getElementById('restock-amount') as HTMLInputElement
+                            const reasonInput = document.getElementById('restock-reason') as HTMLInputElement
+                            const amount = parseInt(amountInput.value) || 0
+                            const reason = reasonInput.value || 'Supplier delivery'
+                            
+                            handleStockAdjustment('restock', amount, reason)
+                          }}>
+                            Confirm Restock
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                    
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:hover:bg-amber-900/50 dark:hover:text-amber-300 dark:border-amber-900/50">
+                          - Sale
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Record Sale</DialogTitle>
+                          <DialogDescription>
+                            Reduce inventory due to sales.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="sale-amount" className="text-right">
+                              Amount
+                            </Label>
+                            <Input
+                              id="sale-amount"
+                              type="number"
+                              min="1"
+                              className="col-span-3"
+                              defaultValue="1"
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="sale-reason" className="text-right">
+                              Details
+                            </Label>
+                            <Input
+                              id="sale-reason"
+                              className="col-span-3"
+                              defaultValue="Customer purchase"
+                              placeholder="Sale details"
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button type="button" onClick={() => {
+                            const amountInput = document.getElementById('sale-amount') as HTMLInputElement
+                            const reasonInput = document.getElementById('sale-reason') as HTMLInputElement
+                            const amount = parseInt(amountInput.value) || 0
+                            const reason = reasonInput.value || 'Customer purchase'
+                            
+                            handleStockAdjustment('sale', -amount, reason)
+                          }}>
+                            Record Sale
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                    
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="bg-purple-50 text-purple-600 hover:bg-purple-100 hover:text-purple-700 border-purple-200 dark:bg-purple-950/30 dark:text-purple-400 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 dark:border-purple-900/50">
+                          ± Adjust
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Manual Adjustment</DialogTitle>
+                          <DialogDescription>
+                            Manually adjust inventory for other reasons.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="adjust-amount" className="text-right">
+                              Change
+                            </Label>
+                            <Input
+                              id="adjust-amount"
+                              type="number"
+                              className="col-span-3"
+                              defaultValue="0"
+                              placeholder="Positive or negative number"
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="adjust-reason" className="text-right">
+                              Reason
+                            </Label>
+                            <Input
+                              id="adjust-reason"
+                              className="col-span-3"
+                              defaultValue="Inventory audit"
+                              placeholder="Reason for adjustment"
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button type="button" onClick={() => {
+                            const amountInput = document.getElementById('adjust-amount') as HTMLInputElement
+                            const reasonInput = document.getElementById('adjust-reason') as HTMLInputElement
+                            const amount = parseInt(amountInput.value) || 0
+                            const reason = reasonInput.value || 'Inventory audit'
+                            
+                            handleStockAdjustment('adjustment', amount, reason)
+                          }}>
+                            Confirm Adjustment
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
+                <ProductHistory product={product} />
+              </>
+            )}
           </TabsContent>
         </Tabs>
       </DialogContent>

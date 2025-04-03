@@ -1,5 +1,6 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { Product } from '@/lib/types'
+import { AnalyticsService } from '@/lib/analytics-service'
 
 
 /**
@@ -105,6 +106,23 @@ export const productsService = {
       throw error
     }
 
+    // Record the initial stock as a 'restock' event
+    if (data && data.stock > 0) {
+      try {
+        const analyticsService = new AnalyticsService()
+        await analyticsService.recordStockChange(
+          data.id,
+          0, // Previous stock is 0 for a new product
+          data.stock,
+          'restock', // Always a restock when first adding product
+          'Initial product stock'
+        )
+      } catch (recordError) {
+        // Log the error but don't fail the create operation
+        console.error('Error recording initial stock:', recordError)
+      }
+    }
+
     return data
   },
 
@@ -118,6 +136,42 @@ export const productsService = {
   async update(id: string, updates: Partial<Product>): Promise<Product> {
     const supabase = createClientComponentClient()
     console.log('Updating product:', { id, updates })
+
+    // If stock is being updated, we need to track the change
+    if (updates.stock !== undefined) {
+      try {
+        // First get the current product to compare stock values
+        const currentProduct = await this.getById(id)
+        if (currentProduct && currentProduct.stock !== updates.stock) {
+          // Stock has changed, record it
+          const analyticsService = new AnalyticsService()
+          const previousStock = currentProduct.stock
+          const newStock = updates.stock
+          
+          // Determine the event type based on the stock change
+          const changeAmount = newStock - previousStock
+          let eventType: 'update' | 'restock' | 'sale' | 'adjustment' = 'update'
+          
+          if (changeAmount > 0) {
+            eventType = 'restock'
+          } else if (changeAmount < 0) {
+            eventType = 'sale'
+          }
+          
+          // Record the stock change
+          await analyticsService.recordStockChange(
+            id,
+            previousStock,
+            newStock,
+            eventType,
+            `Stock ${eventType} via product edit`
+          )
+        }
+      } catch (recordError) {
+        // Log the error but continue with the update
+        console.error('Error recording stock change:', recordError)
+      }
+    }
 
     const { data, error } = await supabase
       .from('products')

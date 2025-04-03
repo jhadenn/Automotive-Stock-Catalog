@@ -64,16 +64,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       console.log('Signing out...')
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        console.error('Error signing out:', error)
-        throw error
+      
+      // First check if we have a session to avoid the AuthSessionMissingError
+      const { data: sessionData } = await supabase.auth.getSession()
+      
+      if (sessionData?.session) {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+          console.error('Error signing out:', error)
+          // Continue with local cleanup even if backend signout fails
+        }
+      } else {
+        console.log('No active session found, cleaning up local state only')
       }
+      
+      // Always reset the user state and redirect regardless of errors
+      setUser(null)
       console.log('Sign out successful')
       router.push('/')
     } catch (err) {
       console.error('Unexpected error in signOut:', err)
-      throw err
+      // Still reset user state and redirect even if there was an error
+      setUser(null)
+      router.push('/')
     }
   }
 

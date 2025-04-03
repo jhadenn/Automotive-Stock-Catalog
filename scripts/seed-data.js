@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './.env.local' })
+require('dotenv').config({ path: './.env' })
 const { createClient } = require('@supabase/supabase-js')
 const { mockProducts } = require('../lib/data')
 const { v4: uuidv4 } = require('uuid') // First run: npm install uuid
