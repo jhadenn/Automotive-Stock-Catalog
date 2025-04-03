@@ -1,9 +1,9 @@
-require('dotenv').config({ path: './.env.local' })
+require('dotenv').config({ path: './.env' })
 const { createClient } = require('@supabase/supabase-js')
 const { mockProducts } = require('../lib/data')
 const { v4: uuidv4 } = require('uuid') // First run: npm install uuid
 
-// Debug: Print environment variables (don't include this in production!)
+// Debug
 console.log('Environment variables check:')
 console.log('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? '✓ Present' : '✗ Missing')
 console.log('SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? '✓ Present' : '✗ Missing')

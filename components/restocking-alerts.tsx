@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { AlertTriangle, AlertCircle, CheckCircle2, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,9 +28,10 @@ import { productsService } from "@/lib/products-service"
 
 interface RestockingAlertsProps {
   defaultThreshold?: number
+  generateAlertsOverride?: () => Promise<any>
 }
 
-export function RestockingAlerts({ defaultThreshold = 5 }: RestockingAlertsProps) {
+export function RestockingAlerts({ defaultThreshold = 5, generateAlertsOverride }: RestockingAlertsProps) {
   const { isAuthenticated } = useAuth()
   const [alerts, setAlerts] = useState<RestockingAlert[]>([])
   const [loading, setLoading] = useState(true)
@@ -41,7 +42,7 @@ export function RestockingAlerts({ defaultThreshold = 5 }: RestockingAlertsProps
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [productThreshold, setProductThreshold] = useState<number>(5)
   
-  // Fetch active alerts and products
+  // Fetch active alerts and products and automatically check inventory
   useEffect(() => {
     if (!isAuthenticated) return
     
@@ -49,9 +50,8 @@ export function RestockingAlerts({ defaultThreshold = 5 }: RestockingAlertsProps
       setLoading(true)
       try {
         const restockingService = new RestockingService()
-        const alertsData = await restockingService.getActiveAlerts()
-        setAlerts(alertsData)
         
+        // Get all products
         const productsData = await productsService.getAll()
         setProducts(productsData)
         
@@ -64,6 +64,10 @@ export function RestockingAlerts({ defaultThreshold = 5 }: RestockingAlertsProps
           }
         }
         setProductSpecificThresholds(thresholds)
+        
+        // Automatically generate alerts for products below threshold
+        await generateAlertsInternal(productsData, thresholds)
+        
       } catch (error) {
         console.error("Error fetching alerts:", error)
       } finally {
@@ -74,20 +78,18 @@ export function RestockingAlerts({ defaultThreshold = 5 }: RestockingAlertsProps
     fetchData()
   }, [isAuthenticated])
   
-  // Generate alerts based on current thresholds
-  const generateAlerts = async () => {
+  // Internal function to generate alerts that can be reused
+  const generateAlertsInternal = async (productsList = products, thresholds = productSpecificThresholds) => {
     if (!isAuthenticated) return
     
-    setLoading(true)
     try {
       const restockingService = new RestockingService()
       
       // Process each product with its specific threshold or the global one
-      const allProducts = await productsService.getAll()
       const newAlerts: RestockingAlert[] = []
       
-      for (const product of allProducts) {
-        const threshold = productSpecificThresholds[product.id] || globalThreshold
+      for (const product of productsList) {
+        const threshold = thresholds[product.id] || globalThreshold
         if (product.stock < threshold) {
           const productAlerts = await restockingService.generateRestockingAlerts(threshold)
           newAlerts.push(...productAlerts)
@@ -97,6 +99,28 @@ export function RestockingAlerts({ defaultThreshold = 5 }: RestockingAlertsProps
       // Get updated alerts list
       const alertsData = await restockingService.getActiveAlerts()
       setAlerts(alertsData)
+      
+      return alertsData
+    } catch (error) {
+      console.error("Error generating alerts:", error)
+      throw error
+    }
+  }
+  
+  // The public generate alerts function now uses the internal one
+  const generateAlerts = async () => {
+    if (!isAuthenticated) return
+    
+    setLoading(true)
+    try {
+      // Use the override for testing if provided
+      if (generateAlertsOverride) {
+        const alertsData = await generateAlertsOverride();
+        setAlerts(alertsData || []);
+        return;
+      }
+      
+      await generateAlertsInternal()
     } catch (error) {
       console.error("Error generating alerts:", error)
     } finally {

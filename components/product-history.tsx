@@ -130,7 +130,7 @@ export function ProductHistory({ product }: ProductHistoryProps) {
               {history.events.map((event, index) => (
                 <div 
                   key={event.id || index}
-                  className="flex justify-between items-start border-b pb-3"
+                  className="flex justify-between items-start border-b pb-3 dark:border-gray-700"
                 >
                   <div>
                     <div className="font-medium flex items-center gap-1">
@@ -164,7 +164,7 @@ export function ProductHistory({ product }: ProductHistoryProps) {
         <TabsContent value="analytics" className="p-0">
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-4">
-              <Card>
+              <Card className="bg-white dark:bg-gray-800">
                 <CardHeader className="p-4">
                   <CardTitle className="text-sm font-medium">Average Stock Level</CardTitle>
                 </CardHeader>
@@ -175,7 +175,7 @@ export function ProductHistory({ product }: ProductHistoryProps) {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="bg-white dark:bg-gray-800">
                 <CardHeader className="p-4">
                   <CardTitle className="text-sm font-medium">Restock Frequency</CardTitle>
                 </CardHeader>
@@ -188,7 +188,7 @@ export function ProductHistory({ product }: ProductHistoryProps) {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="bg-white dark:bg-gray-800">
                 <CardHeader className="p-4">
                   <CardTitle className="text-sm font-medium">Stock Turnover</CardTitle>
                 </CardHeader>
@@ -199,7 +199,7 @@ export function ProductHistory({ product }: ProductHistoryProps) {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="bg-white dark:bg-gray-800">
                 <CardHeader className="p-4">
                   <CardTitle className="text-sm font-medium">Days Out of Stock</CardTitle>
                 </CardHeader>
