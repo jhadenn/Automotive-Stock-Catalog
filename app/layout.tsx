@@ -5,6 +5,7 @@ import "./globals.css"
 import { AuthProvider } from "@/components/auth-provider"
 import Navbar from "@/components/navbar"
 import { ProductProvider } from "@/lib/product-context"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,14 +20,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AuthProvider>
-          <ProductProvider>
-            <Navbar />
-            <main className="container mx-auto px-4 py-4">{children}</main>
-          </ProductProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <ProductProvider>
+              <Navbar />
+              <main className="container mx-auto px-4 py-4">{children}</main>
+            </ProductProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

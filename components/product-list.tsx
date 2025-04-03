@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/components/auth-provider"
 import { Filter, Search } from "lucide-react"
@@ -21,6 +21,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { EyeIcon, PencilIcon, TrashIcon, PlusIcon } from "lucide-react"
+import { SearchService } from "@/lib/search-service"
 
 interface ProductListProps {
   products: Product[]
@@ -48,6 +49,9 @@ export default function ProductList({
   const [productToDelete, setProductToDelete] = useState<{id: string, name: string} | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [categoryFilter, setCategoryFilter] = useState<string[]>([])
+  const [isRelevanceSearch, setIsRelevanceSearch] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const handleAddProduct = () => {
     setCurrentProduct(null)
@@ -91,15 +95,11 @@ export default function ProductList({
 
     if (term.trim() === "") {
       setFilteredProducts(products)
+      setIsRelevanceSearch(false)
     } else {
-      setFilteredProducts(
-        products.filter(
-          (product) =>
-            product.name.toLowerCase().includes(term) ||
-            product.description.toLowerCase().includes(term) ||
-            product.category.toLowerCase().includes(term),
-        ),
-      )
+      const searchResult = SearchService.search(products, term);
+      setFilteredProducts(searchResult.results)
+      setIsRelevanceSearch(!searchResult.exactMatch && searchResult.results.length > 0)
     }
   }
 
@@ -190,6 +190,14 @@ export default function ProductList({
           </Button>
         )}
       </div>
+
+      {isRelevanceSearch && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-md mb-4 text-sm">
+          <p className="text-blue-700 dark:text-blue-300">
+            No exact matches found. Showing relevant results for "<strong>{searchTerm}</strong>".
+          </p>
+        </div>
+      )}
 
       <div className="rounded-lg border shadow-sm">
         <div className="overflow-x-auto">

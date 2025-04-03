@@ -32,12 +32,6 @@ clean:
 	rm -rf .next
 	rm -rf out
 
-# Deploy application (customize as needed)
-deploy: build
-	@echo "Deploying application..."
-	# Add deployment commands here
-	# Example: rsync -avz --delete out/ user@server:/path/to/deploy/
-
 # Run database seed script
 seed:
 	@echo "Seeding database..."
