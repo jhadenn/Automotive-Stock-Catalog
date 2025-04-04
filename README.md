@@ -3,7 +3,7 @@
 # About 
 <p id="description">
 
-This project is a comprehensive inventory management and cataloging application for an auto retail business. It will be the centre of the store's inventory management for vehicles, parts, and tools, and its functionality will cater towards different users - owners, managers, employees, and customers. The application will allow for the adding, editing, and removing of products, searching and filtering the catalog, managing stock levels, and secure access control. The application will also offer features such as guest browsing and relevancy-based searching for customers, and analytics reporting to drive decision-making.
+This project is a comprehensive inventory management and cataloging application for an auto retail business. It will be the centre of the store's inventory management for vehicles, parts, and tools, and its functionality will cater towards different users, owners, managers, employees, and customers. The application will allow for the adding, editing, and removing of products, searching and filtering the catalog, managing stock levels, and secure access control. The application will also offer features such as guest browsing and relevancy-based searching for customers, and analytics reporting to drive decision-making.
 
 * [LINK TO WEB APPLICATION](https://automotive-stock-catalog.vercel.app/)
 <h2>🧐 Features</h2>
