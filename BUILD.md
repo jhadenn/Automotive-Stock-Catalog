@@ -186,20 +186,3 @@ Custom deployment commands can be added to the `deploy` target in the Makefile.
 
 - **Tests failing:**
   Check the test output for details on which tests are failing and why.
-```
-
-## Summary for Your TA
-
-When explaining this to your TA, you can highlight:
-
-1. **Standardized Build Process**: The Makefile provides a standardized interface for building, testing, and running the application regardless of platform.
-
-2. **Cross-Platform Support**: The project includes both Windows batch scripts and Unix shell scripts to support different development environments.
-
-3. **Developer Onboarding**: The comprehensive documentation in BUILD.md makes it easy for new developers to get started with the project.
-
-4. **CI/CD Readiness**: The scripts are structured in a way that makes them easy to integrate with CI/CD pipelines.
-
-5. **Build Automation**: The scripts automate common tasks and include error handling to catch issues early in the development process.
-
-This approach maintains the existing npm scripts while providing a more standardized interface for building and running the application, which is particularly helpful for new developers who might not be familiar with the specific npm commands used in the project. 
