@@ -1,18 +1,39 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { Product } from '@/lib/types'
 
+/**
+ * Represents an alert for a product that needs restocking.
+ * This is used to track products with stock levels below their defined thresholds.
+ */
 export interface RestockingAlert {
+  /** Unique identifier for the alert (auto-generated) */
   id?: string;
+  /** ID of the product that needs restocking */
   productId: string;
+  /** Name of the product that needs restocking */
   productName: string;
+  /** Current stock level of the product */
   currentStock: number;
+  /** Threshold value that triggered this alert */
   threshold: number;
+  /** Timestamp when the alert was created */
   createdAt?: string;
+  /** Current status of the alert */
   status: 'active' | 'resolved';
 }
 
+/**
+ * Service responsible for monitoring and managing product stock levels.
+ * Provides functionality for checking low stock, generating alerts, and managing threshold settings.
+ */
 export class RestockingService {
-  // Check which products are below the stock threshold
+  /**
+   * Retrieves all products with stock levels below the specified threshold.
+   * 
+   * @param threshold - The minimum stock level before a product is considered low
+   * @returns Promise resolving to an array of products below the threshold
+   * @throws Error if the database query fails
+   */
   async checkLowStockItems(threshold: number): Promise<Product[]> {
     const supabase = createClientComponentClient();
     
@@ -35,7 +56,14 @@ export class RestockingService {
     }
   }
 
-  // Generate alerts for products below threshold
+  /**
+   * Creates restocking alerts for all products below the specified threshold.
+   * Skips products that already have active alerts.
+   * 
+   * @param threshold - The stock threshold to check against
+   * @returns Promise resolving to an array of created or existing alerts
+   * @throws Error if the alert generation process fails
+   */
   async generateRestockingAlerts(threshold: number): Promise<RestockingAlert[]> {
     try {
       // Get all products below threshold
@@ -95,7 +123,12 @@ export class RestockingService {
     }
   }
 
-  // Retrieve all active alerts
+  /**
+   * Retrieves all active restocking alerts.
+   * 
+   * @returns Promise resolving to an array of active restocking alerts
+   * @throws Error if the database query fails
+   */
   async getActiveAlerts(): Promise<RestockingAlert[]> {
     const supabase = createClientComponentClient();
     
@@ -118,7 +151,13 @@ export class RestockingService {
     }
   }
 
-  // Get product threshold settings
+  /**
+   * Gets the custom threshold setting for a specific product.
+   * 
+   * @param productId - The ID of the product to get the threshold for
+   * @returns Promise resolving to the threshold value or null if not set
+   * @throws Error if the database query fails
+   */
   async getProductThreshold(productId: string): Promise<number | null> {
     const supabase = createClientComponentClient();
     
@@ -144,7 +183,14 @@ export class RestockingService {
     }
   }
 
-  // Set product threshold
+  /**
+   * Sets a custom threshold for a specific product.
+   * If a threshold already exists, it will be updated; otherwise, a new one is created.
+   * 
+   * @param productId - The ID of the product to set the threshold for
+   * @param threshold - The threshold value to set
+   * @throws Error if the database operation fails
+   */
   async setProductThreshold(productId: string, threshold: number): Promise<void> {
     const supabase = createClientComponentClient();
     
@@ -183,7 +229,13 @@ export class RestockingService {
     }
   }
 
-  // Mark an alert as resolved
+  /**
+   * Marks a restocking alert as resolved.
+   * 
+   * @param alertId - The ID of the alert to mark as resolved
+   * @returns Promise resolving to the updated alert
+   * @throws Error if the database operation fails
+   */
   async markAlertResolved(alertId: string): Promise<RestockingAlert> {
     const supabase = createClientComponentClient();
     
@@ -199,7 +251,7 @@ export class RestockingService {
         .single();
         
       if (error) {
-        console.error('Error resolving alert:', error);
+        console.error('Error marking alert as resolved:', error);
         throw error;
       }
       
@@ -210,7 +262,13 @@ export class RestockingService {
     }
   }
 
-  // Helper method to map database response to RestockingAlert interface
+  /**
+   * Helper method to map database response to the RestockingAlert interface.
+   * 
+   * @param data - Raw data from the database
+   * @returns A properly formatted RestockingAlert object
+   * @private
+   */
   private mapToRestockingAlert(data: any): RestockingAlert {
     return {
       id: data.id,

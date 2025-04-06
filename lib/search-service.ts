@@ -1,12 +1,33 @@
 import type { Product } from '@/lib/types'
 
+/**
+ * Configuration options for product search operations.
+ */
 interface SearchOptions {
-  threshold?: number;  // Similarity threshold (0-1)
-  limit?: number;      // Maximum number of results
+  /** 
+   * Similarity threshold between 0-1.
+   * Higher values require closer matches. Default is 0.3.
+   */
+  threshold?: number;
+  /** 
+   * Maximum number of results to return.
+   * Default is 10.
+   */
+  limit?: number;
 }
 
+/**
+ * Service providing product search functionality with exact and fuzzy matching capabilities.
+ * Supports searching across multiple product fields with configurable thresholds.
+ */
 export class SearchService {
-  // Search for products with exact matches
+  /**
+   * Searches for products with exact substring matches in name, description, category, or SKU.
+   * 
+   * @param products - Array of products to search
+   * @param term - Search term to look for
+   * @returns Array of products containing exact matches for the search term
+   */
   static searchExact(products: Product[], term: string): Product[] {
     if (!term || term.trim() === '') {
       return products;
@@ -22,7 +43,16 @@ export class SearchService {
     );
   }
 
-  // Get relevant products based on similarity
+  /**
+   * Finds products based on text similarity and relevance scoring.
+   * Uses a combination of exact matching, partial matching, and category relevance
+   * to determine the most relevant products for a search term.
+   * 
+   * @param products - Array of products to search
+   * @param term - Search term to look for
+   * @param options - Configuration options for the search
+   * @returns Array of products ranked by relevance score above the threshold
+   */
   static findRelevantProducts(products: Product[], term: string, options: SearchOptions = {}): Product[] {
     const { threshold = 0.3, limit = 10 } = options;
     
@@ -86,7 +116,15 @@ export class SearchService {
     return relevantProducts;
   }
   
-  // Helper method to check if search term is related to a category
+  /**
+   * Helper method to determine if a search term is relevant to a product category.
+   * Uses predefined mappings of terms commonly associated with each category.
+   * 
+   * @param term - The search term to check
+   * @param category - The product category to compare against
+   * @returns True if the term is relevant to the category, false otherwise
+   * @private
+   */
   private static isCategoryRelevant(term: string, category: string): boolean {
     const categoryMappings: Record<string, string[]> = {
       'Parts': ['part', 'component', 'spare', 'replacement', 'fix', 'repair'],
@@ -100,7 +138,15 @@ export class SearchService {
     );
   }
   
-  // Perform a search with fallback to relevant results
+  /**
+   * Performs a complete search operation, first attempting exact matches,
+   * then falling back to relevant/fuzzy matches if no exact matches are found.
+   * 
+   * @param products - Array of products to search
+   * @param term - Search term to look for
+   * @param options - Configuration options for the search
+   * @returns Object containing search results and a flag indicating if exact matches were found
+   */
   static search(products: Product[], term: string, options: SearchOptions = {}): {
     results: Product[],
     exactMatch: boolean

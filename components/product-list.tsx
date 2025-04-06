@@ -23,15 +23,39 @@ import {
 import { EyeIcon, PencilIcon, TrashIcon, PlusIcon } from "lucide-react"
 import { SearchService } from "@/lib/search-service"
 
+/**
+ * Props for the ProductList component.
+ * This component is responsible for displaying and managing a list of products with search, filtering, and CRUD operations.
+ */
 interface ProductListProps {
+  /** Array of products to display in the list */
   products: Product[]
+  /** Callback function when a product is viewed */
   onView: (product: Product) => void
+  /** Callback function when a product is edited */
   onEdit: (product: Product) => void
+  /** Callback function when a product is deleted */
   onDelete: (id: string) => void
+  /** Callback function when a new product is to be added */
   onAdd: () => void
+  /** Whether the user has permission to edit products */
   canEdit?: boolean
 }
 
+/**
+ * A component that displays a searchable, filterable list of products with action buttons.
+ * 
+ * Features:
+ * - Search products by name and other attributes
+ * - Filter and sort products by price, stock, etc.
+ * - View product details
+ * - Edit products (if authorized)
+ * - Delete products (if authorized)
+ * - Add new products (if authorized)
+ * 
+ * @param props - The component props
+ * @returns A product listing interface with search, filtering, and CRUD operations
+ */
 export default function ProductList({
   products,
   onView,

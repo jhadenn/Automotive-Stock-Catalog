@@ -17,17 +17,43 @@ import { TabsList, TabsTrigger, Tabs, TabsContent } from "@/components/ui/tabs"
 import { AnalyticsService } from "@/lib/analytics-service"
 import { useAuth } from "@/components/auth-provider"
 
+/**
+ * Props for the ProductDetailModal component.
+ * This component can be used to view, edit, or create products in the catalog.
+ */
 interface ProductDetailModalProps {
+  /** The product to display or edit, or null when creating a new product */
   product: Product | null
+  /** Whether the modal is open */
   isOpen: boolean
+  /** Callback function to close the modal */
   onClose: () => void
+  /** Callback function when a product is saved (created or updated) */
   onSave: (product: Product) => void | Promise<void>;
+  /** Callback function when a product is deleted */
   onDelete: (id: string) => void
+  /** Whether the modal starts in edit mode */
   isEditing: boolean
+  /** Whether the user has permission to edit the product */
   canEdit: boolean
+  /** Whether the modal is in a loading state */
   loading?: boolean
 }
 
+/**
+ * A modal component for viewing, editing, and creating products.
+ * 
+ * Features:
+ * - View product details and images
+ * - Edit product information
+ * - Upload product images
+ * - Adjust stock levels with tracking
+ * - View product history
+ * - Delete products
+ * 
+ * @param props - The component props
+ * @returns A modal dialog for product management
+ */
 export default function ProductDetailModal({
   product,
   isOpen,

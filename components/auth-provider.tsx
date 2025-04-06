@@ -5,18 +5,40 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import type { User } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
 
+/**
+ * Type definition for the authentication context.
+ * Provides authentication state and methods for user management.
+ */
 type AuthContextType = {
+  /** The current authenticated user or null if not logged in */
   user: User | null
+  /** Whether a user is currently authenticated */
   isAuthenticated: boolean
+  /** Check if the current user is authorized for specific roles */
   isAuthorized: (roles?: string[]) => boolean
+  /** Sign in with email and password */
   signIn: (email: string, password: string) => Promise<void>
+  /** Create a new user account with email and password */
   signUp: (email: string, password: string) => Promise<void>
+  /** Sign out the current user */
   signOut: () => Promise<void>
+  /** Whether authentication state is still loading */
   loading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+/**
+ * Authentication provider component that manages user authentication state.
+ * 
+ * This component:
+ * 1. Sets up Supabase authentication
+ * 2. Listens for auth state changes
+ * 3. Provides methods for sign-in, sign-up, and sign-out
+ * 4. Makes auth state and methods available via context
+ * 
+ * @param children - React components that will have access to auth context
+ */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
@@ -42,6 +64,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
+  /**
+   * Sign in a user with email and password
+   * @param email - User's email address
+   * @param password - User's password
+   * @throws Error if sign-in fails
+   */
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -50,6 +78,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
   }
 
+  /**
+   * Create a new user account with email and password
+   * @param email - User's email address
+   * @param password - User's password
+   * @throws Error if sign-up fails
+   */
   const signUp = async (email: string, password: string) => {
     const { error } = await supabase.auth.signUp({
       email,
@@ -61,6 +95,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
   }
 
+  /**
+   * Sign out the current user and redirect to the home page
+   * Handles errors gracefully to ensure user state is reset even if backend logout fails
+   */
   const signOut = async () => {
     try {
       console.log('Signing out...')
@@ -90,6 +128,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  /**
+   * Check if the current user is authorized for specific roles
+   * @param roles - Optional array of roles to check against
+   * @returns True if user is authorized, false otherwise
+   */
   const isAuthorized = (roles?: string[]) => {
     // If no roles specified, just check authentication
     if (!roles || roles.length === 0) return !!user
@@ -116,6 +159,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
+/**
+ * Hook to access authentication context from any component.
+ * Must be used within an AuthProvider component.
+ * 
+ * @returns The authentication context with user state and auth methods
+ * @throws Error if used outside of an AuthProvider
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (context === undefined) {
