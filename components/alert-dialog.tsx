@@ -6,12 +6,17 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
+// Root component that provides context for the alert dialog
 const AlertDialog = AlertDialogPrimitive.Root
 
+// Component that triggers the alert dialog when clicked
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger
 
+// Renders the dialog content outside the DOM hierarchy of the parent component
 const AlertDialogPortal = AlertDialogPrimitive.Portal
 
+// Semi-transparent overlay that appears behind the dialog
+// Includes animation states for opening and closing
 const AlertDialogOverlay = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
@@ -27,6 +32,8 @@ const AlertDialogOverlay = React.forwardRef<
 ))
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
 
+// Main container for the dialog content
+// Handles positioning, animations, and styling
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
@@ -45,16 +52,22 @@ const AlertDialogContent = React.forwardRef<
 ))
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
 
+// Container for the dialog's header content
+// Supports both centered and left-aligned text layouts
 const AlertDialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col space-y-2 text-center sm:text-left", className)} {...props} />
 )
 AlertDialogHeader.displayName = "AlertDialogHeader"
 
+// Container for action buttons
+// Responsive layout that stacks on mobile and aligns right on desktop
 const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)} {...props} />
 )
 AlertDialogFooter.displayName = "AlertDialogFooter"
 
+// Displays the dialog's title
+// Uses Radix UI's Title primitive with custom styling
 const AlertDialogTitle = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
@@ -63,6 +76,8 @@ const AlertDialogTitle = React.forwardRef<
 ))
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName
 
+// Displays additional descriptive text
+// Uses muted text color for secondary information
 const AlertDialogDescription = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
@@ -71,6 +86,8 @@ const AlertDialogDescription = React.forwardRef<
 ))
 AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName
 
+// Primary action button
+// Uses the default button variant
 const AlertDialogAction = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
@@ -79,6 +96,8 @@ const AlertDialogAction = React.forwardRef<
 ))
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName
 
+// Secondary action button for canceling/dismissing the dialog
+// Uses the outline button variant
 const AlertDialogCancel = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>

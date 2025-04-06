@@ -6,14 +6,19 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// Root component that manages the dialog state
 const Dialog = DialogPrimitive.Root
 
+// Component that triggers the dialog to open
 const DialogTrigger = DialogPrimitive.Trigger
 
+// Component that renders the dialog content in a portal
 const DialogPortal = DialogPrimitive.Portal
 
+// Component that closes the dialog
 const DialogClose = DialogPrimitive.Close
 
+// Overlay component that dims the background when dialog is open
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
@@ -29,6 +34,7 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+// Main content container for the dialog
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
@@ -56,6 +62,7 @@ const DialogContent = React.forwardRef<
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+// Header section of the dialog, typically contains title
 const DialogHeader = ({
   className,
   ...props
@@ -70,6 +77,7 @@ const DialogHeader = ({
 )
 DialogHeader.displayName = "DialogHeader"
 
+// Footer section of the dialog, typically contains action buttons
 const DialogFooter = ({
   className,
   ...props
@@ -84,6 +92,7 @@ const DialogFooter = ({
 )
 DialogFooter.displayName = "DialogFooter"
 
+// Title component for the dialog
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
@@ -99,6 +108,7 @@ const DialogTitle = React.forwardRef<
 ))
 DialogTitle.displayName = DialogPrimitive.Title.displayName
 
+// Description component for the dialog
 const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
