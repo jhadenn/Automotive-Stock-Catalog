@@ -84,6 +84,11 @@ export default function ProductDetailModal({
   const [validationErrors, setValidationErrors] = useState<{price?: string, stock?: string}>({})
   const [showDeleteAlert, setShowDeleteAlert] = useState(false)
   
+  // Add dialog state variables
+  const [restockDialogOpen, setRestockDialogOpen] = useState(false)
+  const [saleDialogOpen, setSaleDialogOpen] = useState(false)
+  const [adjustDialogOpen, setAdjustDialogOpen] = useState(false)
+  
   // Create separate refs for main image and each thumbnail
   const mainImageInputRef = useRef<HTMLInputElement>(null)
   const thumbnail1InputRef = useRef<HTMLInputElement>(null)
@@ -186,11 +191,28 @@ export default function ProductDetailModal({
         stock: newStock
       }))
       
-      // Also update the actual product data
-      onSave({
+      // Create a special version of the product with a flag indicating
+      // this is a direct stock adjustment to prevent duplicate operations
+      const updatedProduct = {
         ...formData,
-        stock: newStock
-      })
+        stock: newStock,
+        _isStockAdjustment: true, // Flag to signal this is from stock UI, not a regular edit
+        _adjustmentType: adjustmentType,
+        _adjustmentAmount: amount,
+        _adjustmentReason: reason
+      }
+      
+      // Update the product data with the flag
+      onSave(updatedProduct)
+
+      // Close the dialog based on which type was used
+      if (adjustmentType === 'restock') {
+        setRestockDialogOpen(false)
+      } else if (adjustmentType === 'sale') {
+        setSaleDialogOpen(false)
+      } else if (adjustmentType === 'adjustment') {
+        setAdjustDialogOpen(false)
+      }
     } catch (error) {
       console.error("Error adjusting stock:", error)
     }
@@ -683,7 +705,7 @@ export default function ProductDetailModal({
                 <div className="mb-6 pb-4 border-b">
                   <h3 className="text-lg font-semibold mb-3">Stock Adjustments</h3>
                   <div className="flex flex-wrap gap-2">
-                    <Dialog>
+                    <Dialog open={restockDialogOpen} onOpenChange={setRestockDialogOpen}>
                       <DialogTrigger asChild>
                         <Button variant="outline" size="sm" className="bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:hover:bg-green-900/50 dark:hover:text-green-300 dark:border-green-900/50">
                           + Restock
@@ -695,6 +717,18 @@ export default function ProductDetailModal({
                           <DialogDescription>
                             Add inventory to the current stock level.
                           </DialogDescription>
+                          <button 
+                            type="button"
+                            className="absolute top-2 right-2 h-6 w-6 rounded-full flex items-center justify-center"
+                            onClick={() => setRestockDialogOpen(false)}
+                            aria-label="Close"
+                          >
+                            <span className="sr-only">Close</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid grid-cols-4 items-center gap-4">
@@ -736,7 +770,7 @@ export default function ProductDetailModal({
                       </DialogContent>
                     </Dialog>
                     
-                    <Dialog>
+                    <Dialog open={saleDialogOpen} onOpenChange={setSaleDialogOpen}>
                       <DialogTrigger asChild>
                         <Button variant="outline" size="sm" className="bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:hover:bg-amber-900/50 dark:hover:text-amber-300 dark:border-amber-900/50">
                           - Sale
@@ -748,6 +782,18 @@ export default function ProductDetailModal({
                           <DialogDescription>
                             Reduce inventory due to sales.
                           </DialogDescription>
+                          <button 
+                            type="button"
+                            className="absolute top-2 right-2 h-6 w-6 rounded-full flex items-center justify-center"
+                            onClick={() => setSaleDialogOpen(false)}
+                            aria-label="Close"
+                          >
+                            <span className="sr-only">Close</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid grid-cols-4 items-center gap-4">
@@ -789,7 +835,7 @@ export default function ProductDetailModal({
                       </DialogContent>
                     </Dialog>
                     
-                    <Dialog>
+                    <Dialog open={adjustDialogOpen} onOpenChange={setAdjustDialogOpen}>
                       <DialogTrigger asChild>
                         <Button variant="outline" size="sm" className="bg-purple-50 text-purple-600 hover:bg-purple-100 hover:text-purple-700 border-purple-200 dark:bg-purple-950/30 dark:text-purple-400 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 dark:border-purple-900/50">
                           ± Adjust
@@ -801,6 +847,18 @@ export default function ProductDetailModal({
                           <DialogDescription>
                             Manually adjust inventory for other reasons.
                           </DialogDescription>
+                          <button 
+                            type="button"
+                            className="absolute top-2 right-2 h-6 w-6 rounded-full flex items-center justify-center" 
+                            onClick={() => setAdjustDialogOpen(false)}
+                            aria-label="Close"
+                          >
+                            <span className="sr-only">Close</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid grid-cols-4 items-center gap-4">

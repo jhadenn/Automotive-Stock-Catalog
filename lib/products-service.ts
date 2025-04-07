@@ -137,16 +137,28 @@ export const productsService = {
     const supabase = createClientComponentClient()
     console.log('Updating product:', { id, updates })
 
-    // If stock is being updated, we need to track the change
-    if (updates.stock !== undefined) {
+    // Create a clean version of updates without the special flags
+    const cleanUpdates = { ...updates }
+    
+    // Check if this is a direct stock adjustment from the UI
+    const isStockAdjustment = updates._isStockAdjustment === true
+    
+    // Remove our special flags before submitting to the database
+    if ('_isStockAdjustment' in cleanUpdates) delete cleanUpdates._isStockAdjustment
+    if ('_adjustmentType' in cleanUpdates) delete cleanUpdates._adjustmentType
+    if ('_adjustmentAmount' in cleanUpdates) delete cleanUpdates._adjustmentAmount
+    if ('_adjustmentReason' in cleanUpdates) delete cleanUpdates._adjustmentReason
+
+    // If stock is being updated and it's not a direct adjustment from the UI, we need to track the change
+    if (cleanUpdates.stock !== undefined && !isStockAdjustment) {
       try {
         // First get the current product to compare stock values
         const currentProduct = await this.getById(id)
-        if (currentProduct && currentProduct.stock !== updates.stock) {
+        if (currentProduct && currentProduct.stock !== cleanUpdates.stock) {
           // Stock has changed, record it
           const analyticsService = new AnalyticsService()
           const previousStock = currentProduct.stock
-          const newStock = updates.stock
+          const newStock = cleanUpdates.stock
           
           // Determine the event type based on the stock change
           const changeAmount = newStock - previousStock
@@ -175,7 +187,7 @@ export const productsService = {
 
     const { data, error } = await supabase
       .from('products')
-      .update(updates)
+      .update(cleanUpdates)
       .eq('id', id)
       .select()
       .single()

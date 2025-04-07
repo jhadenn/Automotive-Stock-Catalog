@@ -34,4 +34,13 @@ export interface Product {
   created_at?: string
   /** Timestamp when the product was last updated */
   updated_at?: string
+  
+  /** Internal flag to indicate this update comes from a stock adjustment UI */
+  _isStockAdjustment?: boolean
+  /** Type of stock adjustment being performed */
+  _adjustmentType?: 'restock' | 'sale' | 'adjustment'
+  /** Amount of stock being adjusted */
+  _adjustmentAmount?: number
+  /** Reason for the stock adjustment */
+  _adjustmentReason?: string
 } 
